@@ -18,8 +18,8 @@ class ComplaintController extends Controller
         try {
             $data = $request->validate([
                 'ordernumber' => 'required|integer',
-                'title' => 'required|max:50',
-                'description' => 'required|min:10',
+                'title' => 'required|max:100',
+                'description' => 'required|min:5',
                 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'video' => 'nullable|file|mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime|max:20480',
             ]);
