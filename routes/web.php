@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Ipe\Sdk\Facades\SmsIr;
@@ -30,7 +31,13 @@ Route::middleware(['auth', CheckUserRole::class])->group(function () {
     Route::get('/admin/reports/monthreports',[ComplaintController::class,'dashboardMonthReport'])->name('admin.monthreports');
     Route::get('/admin/reports/yearreports',[ComplaintController::class,'dashboardYearReport'])->name('admin.yearreports');
     Route::get('/reports/custom', [ReportController::class, 'showCustomReportForm'])->name('reports.custom.form');
-Route::post('/reports/custom', [ReportController::class, 'generateCustomReport'])->name('reports.custom.generate');
+    Route::post('/reports/custom', [ReportController::class, 'generateCustomReport'])->name('reports.custom.generate');
+    Route::get('/admin/role/showuser',[RoleController::class,'showRoles']);
+    Route::get('/admin/role/index',[RoleController::class,'roleIndex']);
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+Route::get('admin/userslist', [UserController::class, 'index'])->name('users.index');
+
 });
 Route::post('/logout', function (Request $request) {
     Auth::logout();
@@ -63,5 +70,6 @@ $response = SmsIr::verifySend($mobile, $templateId, $parameters);
 dd($response);
 
 });
+
 
 // sms()->via('farazsmspattern')->to('09385347786')->send("patterncode=yadpxx4l9rl84ku");

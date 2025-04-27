@@ -24,4 +24,9 @@ class CheckUserRole
 
         return $next($request);
     }
+// میدلور برای تست
+    // Route::middleware(['auth', 'role:accounting'])->group(function () {
+    //     Route::get('/accounting/dashboard', [AccountingController::class, 'dashboard'])->name('accounting.dashboard');
+    //     Route::get('/accounting/transactions', [AccountingController::class, 'transactions'])->name('accounting.transactions');
+    // });
 }
