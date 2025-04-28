@@ -26,7 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/complaint/{id}/rating', [ComplaintController::class, 'storeRating'])->name('complaint.rating');
 });
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index']);
+    Route::get('/admin', [AdminController::class, 'index'])->name('complaints.admin.index');
     Route::get('/admin/complaints', [ComplaintController::class, 'index'])->name('complaints.index');
     Route::post('/admin/complaints/{complaint}/respond', [ComplaintController::class, 'respondStore'])->name('complaints.response.store');
     Route::put('admin/complaints/{complaint}/status', [ComplaintController::class, 'updateStatus'])->name('complaints.update.status');
@@ -41,6 +41,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
 Route::get('admin/userslist', [UserController::class, 'index'])->name('users.index');
+Route::get('/adminpanel',[AdminController::class,'adminPanel'])->name('admin.panel');
 
 
 });

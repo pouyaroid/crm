@@ -62,6 +62,13 @@ class FortifyServiceProvider extends ServiceProvider
             return new class implements LoginResponse {
                 public function toResponse($request)
                 {
+                    $user = $request->user(); // دریافت کاربر لاگین شده
+
+                    if ($user->hasRole('admin')) { // اگر نقش کاربر admin باشد
+                        return redirect()->intended('/adminpanel');
+                    }
+        
+                    // در غیر این صورت به داشبورد معمولی برود
                     return redirect()->intended('/dashboard');
                 }
             };
@@ -85,22 +92,3 @@ class FortifyServiceProvider extends ServiceProvider
     }
   
 }
-
-// $this->app->singleton(RegisterResponse::class, function () {
-//     return new class implements RegisterResponse {
-//         public function toResponse($request)
-//         {
-//             // دریافت کاربر پس از ثبت‌نام
-//             $user = $request->user();
-
-//             // بررسی نقش کاربر و هدایت به صفحه مناسب
-//             if ($user->hasRole('admin')) {
-//                 // اگر کاربر نقش admin دارد، به داشبورد ادمین هدایت شود
-//                 return redirect()->route('admin.dashboard');
-//             }
-
-//             // اگر کاربر نقش دیگری (مثلاً sales_agent) دارد، به داشبورد شکایت مشتری هدایت شود
-//             return redirect()->route('customer.complaints.dashboard');
-//         }
-//     };
-// });
