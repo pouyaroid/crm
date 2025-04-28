@@ -6,11 +6,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Ipe\Sdk\Facades\SmsIr;
 use App\Http\Middleware\CheckUserRole;
+use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
+use Spatie\Permission\Middlewares\RoleMiddleware;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my-complaints',[ComplaintController::class,'myComplaints'])->name('complaints.my');
     Route::post('/complaint/{id}/rating', [ComplaintController::class, 'storeRating'])->name('complaint.rating');
 });
-Route::middleware(['auth', CheckUserRole::class])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
     Route::get('/admin/complaints', [ComplaintController::class, 'index'])->name('complaints.index');
     Route::post('/admin/complaints/{complaint}/respond', [ComplaintController::class, 'respondStore'])->name('complaints.response.store');
@@ -37,6 +41,7 @@ Route::middleware(['auth', CheckUserRole::class])->group(function () {
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
 Route::get('admin/userslist', [UserController::class, 'index'])->name('users.index');
+
 
 });
 Route::post('/logout', function (Request $request) {
@@ -73,3 +78,6 @@ dd($response);
 
 
 // sms()->via('farazsmspattern')->to('09385347786')->send("patterncode=yadpxx4l9rl84ku");
+Route::middleware(['auth', 'role:admin'])->name('shared.')->group(function () {
+    Route::get('/saleindex', [SalesController::class, 'index'])->name('index');
+});
