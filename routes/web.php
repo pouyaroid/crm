@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\CustomerInfoController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesController;
@@ -81,4 +82,9 @@ dd($response);
 // sms()->via('farazsmspattern')->to('09385347786')->send("patterncode=yadpxx4l9rl84ku");
 Route::middleware(['auth', 'role:admin'])->name('shared.')->group(function () {
     Route::get('/saleindex', [SalesController::class, 'index'])->name('index');
+});
+
+Route::middleware(['auth', 'role:sales_agent|sales_manager|admin'])->group(function () {
+    Route::get('/customers/create',[CustomerInfoController::class,'create'])->name('customers.create');
+    Route::post('/customers',[CustomerInfoController::class,'store'])->name('customers.store');
 });
