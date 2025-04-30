@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Ipe\Sdk\Facades\SmsIr;
 use App\Http\Middleware\CheckUserRole;
+use App\Models\CustomerInfo;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
@@ -87,4 +88,8 @@ Route::middleware(['auth', 'role:admin'])->name('shared.')->group(function () {
 Route::middleware(['auth', 'role:sales_agent|sales_manager|admin'])->group(function () {
     Route::get('/customers/create',[CustomerInfoController::class,'create'])->name('customers.create');
     Route::post('/customers',[CustomerInfoController::class,'store'])->name('customers.store');
+    Route::get('/customers/index', [CustomerInfoController::class, 'index'])->name('customers.index');
+    // Route::get('/customers/index/{id}', [CustomerInfoController::class, 'index'])->name('customers.show');
+    Route::get('/customers/ajax', [CustomerInfoController::class, 'ajax'])->name('customers.ajax');
+
 });

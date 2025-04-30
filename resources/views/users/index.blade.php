@@ -115,19 +115,17 @@
             @forelse($users as $user)
                 <div class='col-md-4 col-sm-6 mb-4'> <!-- پاسخگو برای دسکتاپ و موبایل -->
                     <div class='card'>
-                        <!-- تصویر تصادفی یا آیکون (می‌توانید با عکس واقعی جایگزین کنید) -->
-                        {{-- <img src='https://via.placeholder.com/300x150?text={{ urlencode($user->name) }}' class='card-img-top' alt='{{ $user->name }}'> --}}
                         <div class='card-body'>
                             <h5 class='card-title'>{{ $user->name }}</h5>
                             <p class='card-text'>ایمیل: {{ $user->email }}</p>
                             <!-- دکمه‌های عملیاتی (ویرایش و حذف، فرض بر اینکه روت‌ها وجود دارند) -->
                             <div class='btn-group' role='group'>
-                                {{-- <a href='{{ route('users.edit', $user->id) }}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i> ویرایش</a>
-                                {{-- <form action='{{ route('users.destroy', $user->id) }}' method='POST' style='display:inline;'>
+                                <a href='{{ route('users.edit', $user->id) }}' class='btn btn-sm btn-warning'><i class='bi bi-pencil'></i> ویرایش</a>
+                                <form action='{{ route('users.destroy', $user->id) }}' method='POST' style='display:inline;' onsubmit='return confirm("آیا مطمئن هستید؟")'>
                                     @csrf
                                     @method('DELETE')
-                                    <button type='submit' class='btn btn-sm btn-danger' onclick='return confirm('آیا مطمئن هستید؟')'><i class='bi bi-trash'></i> حذف</button>
-                                </form> --}} 
+                                    <button type='submit' class='btn btn-sm btn-danger'><i class='bi bi-trash'></i> حذف</button>
+                                </form>
                             </div>
                         </div>
                     </div>

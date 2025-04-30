@@ -34,6 +34,23 @@ class CustomerInfoController extends Controller
         CustomerInfo::create($validate);
     
         return redirect()->route('customers.create')->with('success', 'مشتری با موفقیت ثبت شد.');
+}
+    public function index(Request $request){
+        $customers = CustomerInfo::latest()->paginate(15);
+    return view('Custumer.index', compact('customers'));
+    }
+
+public function ajax(Request $request)
+{
+    $query = $request->search;
+    $customers = CustomerInfo::when($query, function ($q) use ($query) {
+        $q->where('personal_name', 'like', "%$query%")
+            ->orWhere('company_name', 'like', "%$query%")
+            ->orWhere('mobile_phone', 'like', "%$query%")
+            ->orWhere('email', 'like', "%$query%");
+    })->latest()->paginate(15);
+
+    return view('Custumer.partials.table', compact('customers'))->render();
 }}
 // $table->id();
 // $table->string('company_name');
