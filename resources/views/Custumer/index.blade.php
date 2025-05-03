@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>لیست مشتریان</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    {{-- Bootstrap RTL + Font --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     <style>
         body {
@@ -51,7 +49,6 @@
 
     <h2 class="mb-4 fw-bold text-primary">لیست مشتریان</h2>
 
-    {{-- فرم جستجو --}}
     <form method="GET" id="search-form" class="mb-4 border rounded p-3 bg-white shadow-sm">
         <div class="row g-2 align-items-end">
             <div class="col-md-4">
@@ -64,7 +61,6 @@
         </div>
     </form>
 
-    {{-- جدول مشتریان --}}
     <div id="customer-table">
         <table class="table table-bordered table-striped">
             <thead>
@@ -83,7 +79,9 @@
                     <th>کد ملی</th>
                     <th>کد پستی</th>
                     <th>کد اقتصادی</th>
-                   
+                    @if(auth()->user()->hasRole('admin'))
+                        <th>عملیات</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -103,21 +101,22 @@
                         <td>{{ $customer->id_meli }}</td>
                         <td>{{ $customer->postal_code }}</td>
                         <td>{{ $customer->code_eghtesadi }}</td>
+                        @if(auth()->user()->hasRole('admin'))
                         <td>
-                            {{-- <div class="btn-group">
+                            <div class="btn-group">
                                 <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-warning">ویرایش</a>
                                 <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</button>
                                 </form>
-                            </div> --}}
+                            </div>
                         </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
         </table>
-        {{-- در صورتی که مشتری وجود نداشته باشد --}}
         @if($customers->isEmpty())
             <div class="alert alert-info text-center mt-4">هیچ مشتری یافت نشد.</div>
         @endif
@@ -125,14 +124,12 @@
 
 </div>
 
-{{-- jQuery --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-{{-- AJAX برای جستجو --}}
 <script>
     $(document).ready(function () {
         $('#search-form').on('submit', function (e) {
-            e.preventDefault(); // جلوگیری از رفرش صفحه
+            e.preventDefault();
 
             let query = $('#search').val();
 

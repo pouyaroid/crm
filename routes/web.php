@@ -85,11 +85,14 @@ Route::middleware(['auth', 'role:admin'])->name('shared.')->group(function () {
     Route::get('/saleindex', [SalesController::class, 'index'])->name('index');
 });
 
-Route::middleware(['auth', 'role:sales_agent|sales_manager|admin'])->group(function () {
+Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales'])->group(function () {
     Route::get('/customers/create',[CustomerInfoController::class,'create'])->name('customers.create');
     Route::post('/customers',[CustomerInfoController::class,'store'])->name('customers.store');
     Route::get('/customers/index', [CustomerInfoController::class, 'index'])->name('customers.index');
     // Route::get('/customers/index/{id}', [CustomerInfoController::class, 'index'])->name('customers.show');
     Route::get('/customers/ajax', [CustomerInfoController::class, 'ajax'])->name('customers.ajax');
+    Route::get('/customers/{customer}/edit', [CustomerInfoController::class, 'edit'])->name('customers.edit');
+Route::put('/customers/{customer}', [CustomerInfoController::class, 'update'])->name('customers.update');
+Route::delete('/customers/{customer}', [CustomerInfoController::class, 'destroy'])->name('customers.destroy');
 
 });

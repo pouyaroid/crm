@@ -16,23 +16,18 @@ return new class extends Migration
             $table->string('company_name');
             $table->string('company_type');
             $table->string('personal_name');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('ceo');
             $table->string('address');
             $table->string('bank');
-            $table->text('note');
-            $table->integer('account_number');
-            $table->integer('company_phone');
-            $table->integer('mobile_phone');
-            $table->integer('postal_code');
-            $table->integer('id_meli');
-            $table->integer('code_eghtesadi');
+            $table->text('note')->nullable(); // برای اجتناب از خطای null
+            $table->string('account_number', 20); // شماره حساب بلند
+            $table->string('company_phone', 20); // شماره تلفن ثابت
+            $table->string('mobile_phone', 20); // شماره موبایل
+            $table->string('postal_code', 20);
+            $table->string('id_meli', 20); // کد ملی
+            $table->string('code_eghtesadi', 20); // کد اقتصادی
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-   
-
-            
-            
-
             $table->timestamps();
         });
     }

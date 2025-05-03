@@ -4,42 +4,51 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomerInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CustomerInfoController extends Controller
 {
     public function create(){
         return view('Custumer.createcustomer');
+        
     }
     public function store(Request $request){
-        $validate = $request->validate([
-            'company_name' => 'required',
-            'company_type' => 'required',
-            'personal_name' => 'required',
-            'email' => 'required',
-            'address' => 'required',
-            'ceo' => 'required',
-            'bank' => 'required',
-            'note' => 'required',
-            'account_number' => 'required',
-            'company_phone' => 'required',
-            'mobile_phone' => 'required',
-            'id_meli' => 'required',
-            'postal_code' => 'required',
-            'code_eghtesadi' => 'required',
-        ]);
+       
+       
+        try {
+            $validate = $request->validate([
+                'company_name'     => 'required',
+                'company_type'     => 'nullable',
+                'personal_name'    => 'required',
+                'email'            => 'required|email',
+                'address'          => 'required',
+                'ceo'              => 'required',
+                'bank'             => 'required',
+                'note'             => 'nullable',
+                'account_number'   => 'required|numeric',
+                'company_phone'    => 'required|numeric',
+                'mobile_phone'     => 'required|numeric',
+                'id_meli'          => 'required|numeric',
+                'postal_code'      => 'required|numeric',
+                'code_eghtesadi'   => 'required|numeric',
+            ]);
     
-        // اضافه کردن user_id قبل از ایجاد
-        $validate['user_id'] = auth()->id();
+            $validate['user_id'] = auth()->id();
     
-        CustomerInfo::create($validate);
+            CustomerInfo::create($validate);
     
-        return redirect()->route('customers.create')->with('success', 'مشتری با موفقیت ثبت شد.');
-}
-    public function index(Request $request){
-        $customers = CustomerInfo::latest()->paginate(15);
-    return view('Custumer.index', compact('customers'));
+            return redirect()->route('customers.create')->with('success', 'مشتری با موفقیت ثبت شد.');
+        } catch (\Exception $e) {
+            // dd($e->getMessage());
+            // ثبت خطا در لاگ
+            Log::error('خطا در ثبت مشتری: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+    
+            return redirect()->route('customers.create')->with('error', 'خطایی در ثبت اطلاعات رخ داد. لطفاً دوباره تلاش کنید.');
+        }
     }
-
+       
 public function ajax(Request $request)
 {
     $query = $request->search;
@@ -51,19 +60,28 @@ public function ajax(Request $request)
     })->latest()->paginate(15);
 
     return view('Custumer.partials.table', compact('customers'))->render();
-}}
-// $table->id();
-// $table->string('company_name');
-// $table->string('company_type');
-// $table->string('personal_name');
-// $table->string('email');
-// $table->string('ceo');
-// $table->string('address');
-// $table->string('bank');
-// $table->text('note');
-// $table->integer('account_number');
-// $table->integer('company_phone');
-// $table->integer('mobile_phone');
-// $table->integer('postal_code');
-// $table->integer('id_meli');
-// $table->integer('code_eghtesadi');
+}
+public function edit($id)
+{
+    $customer = CustomerInfo::findOrFail($id);
+    return view('Custumer.edit', compact('customer'));
+}
+
+public function update(Request $request, $id)
+{
+    $customer = CustomerInfo::findOrFail($id);
+    $customer->update($request->all());
+
+    return redirect()->route('customers.index')->with('success', 'مشتری با موفقیت ویرایش شد.');
+}
+
+public function destroy($id)
+{
+    $customer = CustomerInfo::findOrFail($id);
+    $customer->delete();
+
+   
+
+}
+}
+

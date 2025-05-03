@@ -11,8 +11,8 @@ class CustomerInfo extends Model
         'company_type',
         'personal_name',
         'email',
-        'ceo',
         'address',
+        'ceo',
         'bank',
         'note',
         'account_number',
@@ -21,7 +21,7 @@ class CustomerInfo extends Model
         'id_meli',
         'postal_code',
         'code_eghtesadi',
-         'user_id',
+        'user_id'
     ];
     public function creator()
     {
