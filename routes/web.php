@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\CustomerInfoController;
+use App\Http\Controllers\LeadCallController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
@@ -103,4 +104,8 @@ Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_
     Route::get('/marketing/leadscreate',[LeadController::class,'create'])->name('leads.create');
     Route::post('/marketing/leads',[LeadController::class,'leadsStore'])->name('leads.store');
     Route::get('/marketing/leads/index',[LeadController::class,'index'])->name('leads.index');
+    Route::get('leads/{lead}/calls/create', [LeadCallController::class, 'create'])->name('leads.calls.create');
+Route::post('leads/{lead}/calls', [LeadCallController::class, 'store'])->name('leads.calls.store');
+Route::get('/leads/{lead}', [LeadCallController::class, 'show'])->name('leads.show');
+
 });
