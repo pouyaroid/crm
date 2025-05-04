@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\CustomerInfoController;
+use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesController;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Ipe\Sdk\Facades\SmsIr;
 use App\Http\Middleware\CheckUserRole;
 use App\Models\CustomerInfo;
+use App\Models\Lead;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
@@ -95,4 +97,10 @@ Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales'])->group
 Route::put('/customers/{customer}', [CustomerInfoController::class, 'update'])->name('customers.update');
 Route::delete('/customers/{customer}', [CustomerInfoController::class, 'destroy'])->name('customers.destroy');
 
+});
+//ّForMarketing
+Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_user'])->group(function(){
+    Route::get('/marketing/leadscreate',[LeadController::class,'create'])->name('leads.create');
+    Route::post('/marketing/leads',[LeadController::class,'leadsStore'])->name('leads.store');
+    Route::get('/marketing/leads/index',[LeadController::class,'index'])->name('leads.index');
 });

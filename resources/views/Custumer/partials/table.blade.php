@@ -1,3 +1,5 @@
+<p>نقش کاربر: {{ auth()->user()->role }}</p>
+
 @if($customers->count())
     <div class="table-responsive">
         <table class="table table-bordered table-striped bg-white">
@@ -17,6 +19,9 @@
                     <th>کد ملی</th>
                     <th>کد پستی</th>
                     <th>کد اقتصادی</th>
+                    @if(auth()->user()->hasAnyRole(['admin', 'sales_manager']))
+                    <th>عملیات</th>
+                @endif
                 </tr>
             </thead>
             <tbody>
@@ -36,13 +41,23 @@
                         <td>{{ $customer->id_meli }}</td>
                         <td>{{ $customer->postal_code }}</td>
                         <td>{{ $customer->code_eghtesadi }}</td>
+                        @if(auth()->user()->hasAnyRole(['admin', 'sales_manager']))
+                            <td>
+                                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-warning">ویرایش</a>
+
+                                <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('آیا مطمئن هستید که می‌خواهید حذف کنید؟')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+                                </form>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
 
-    {{-- صفحه‌بندی --}}
     <div class="d-flex justify-content-center mt-4">
         {!! $customers->links() !!}
     </div>

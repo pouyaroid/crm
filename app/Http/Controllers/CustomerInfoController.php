@@ -48,9 +48,16 @@ class CustomerInfoController extends Controller
             return redirect()->route('customers.create')->with('error', 'خطایی در ثبت اطلاعات رخ داد. لطفاً دوباره تلاش کنید.');
         }
     }
+    public function index()
+{
+    // مثلاً نمایش همه اطلاعات مشتری
+    $customers = CustomerInfo::all();
+    return view('Custumer.index', compact('customers'));
+}
        
 public function ajax(Request $request)
 {
+    
     $query = $request->search;
     $customers = CustomerInfo::when($query, function ($q) use ($query) {
         $q->where('personal_name', 'like', "%$query%")
@@ -79,6 +86,7 @@ public function destroy($id)
 {
     $customer = CustomerInfo::findOrFail($id);
     $customer->delete();
+    return redirect()->route('customers.index')->with('success', 'مشتری با موفقیت حذف شد.');
 
    
 

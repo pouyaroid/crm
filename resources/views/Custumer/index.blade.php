@@ -44,6 +44,7 @@
     </style>
 </head>
 <body>
+    <p>نقش کاربر: {{ implode(', ', auth()->user()->getRoleNames()->toArray()) }}</p>
 
 <div class="container">
 
