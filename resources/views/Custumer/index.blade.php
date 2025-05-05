@@ -47,7 +47,6 @@
     <p>نقش کاربر: {{ implode(', ', auth()->user()->getRoleNames()->toArray()) }}</p>
 
 <div class="container">
-
     <h2 class="mb-4 fw-bold text-primary">لیست مشتریان</h2>
 
     <form method="GET" id="search-form" class="mb-4 border rounded p-3 bg-white shadow-sm">
@@ -62,67 +61,96 @@
         </div>
     </form>
 
-    <div id="customer-table">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>نام شخص</th>
-                    <th>نام شرکت</th>
-                    <th>نوع شرکت</th>
-                    <th>ایمیل</th>
-                    <th>آدرس</th>
-                    <th>مدیرعامل</th>
-                    <th>بانک</th>
-                    <th>توضیحات</th>
-                    <th>شماره حساب</th>
-                    <th>شماره شرکت</th>
-                    <th>شماره موبایل</th>
-                    <th>کد ملی</th>
-                    <th>کد پستی</th>
-                    <th>کد اقتصادی</th>
-                    @if(auth()->user()->hasRole('admin'))
-                        <th>عملیات</th>
-                    @endif
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($customers as $customer)
+    <form method="POST" action="{{ route('customers.message.bulk') }}">
+        @csrf
+        <div id="customer-table">
+            <table class="table table-bordered table-striped">
+                <thead>
                     <tr>
-                        <td>{{ $customer->personal_name }}</td>
-                        <td>{{ $customer->company_name }}</td>
-                        <td>{{ $customer->company_type }}</td>
-                        <td>{{ $customer->email }}</td>
-                        <td>{{ $customer->address }}</td>
-                        <td>{{ $customer->ceo }}</td>
-                        <td>{{ $customer->bank }}</td>
-                        <td>{{ $customer->note }}</td>
-                        <td>{{ $customer->account_number }}</td>
-                        <td>{{ $customer->company_phone }}</td>
-                        <td>{{ $customer->mobile_phone }}</td>
-                        <td>{{ $customer->id_meli }}</td>
-                        <td>{{ $customer->postal_code }}</td>
-                        <td>{{ $customer->code_eghtesadi }}</td>
                         @if(auth()->user()->hasRole('admin'))
-                        <td>
-                            <div class="btn-group">
-                                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-warning">ویرایش</a>
-                                <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</button>
-                                </form>
-                            </div>
-                        </td>
+                            <th><input type="checkbox" id="select-all"></th>
+                            
+                        @endif
+                        <th>نام شخص</th>
+                        <th>نام شرکت</th>
+                        <th>نوع شرکت</th>
+                        <th>ایمیل</th>
+                        <th>آدرس</th>
+                        <th>مدیرعامل</th>
+                        <th>بانک</th>
+                        <th>توضیحات</th>
+                        <th>شماره حساب</th>
+                        <th>شماره شرکت</th>
+                        <th>شماره موبایل</th>
+                        <th>کد ملی</th>
+                        <th>کد پستی</th>
+                        <th>کد اقتصادی</th>
+                        @if(auth()->user()->hasRole('admin'))
+                            <th>عملیات</th>
                         @endif
                     </tr>
+                </thead>
+                <tbody>
+                    @foreach($customers as $customer)
+                        <tr>
+                            @if(auth()->user()->hasRole('admin'))
+                                <td><input type="checkbox" name="selected_customers[]" value="{{ $customer->id }}"></td>
+                            @endif
+                            <td>{{ $customer->personal_name }}</td>
+                            <td>{{ $customer->company_name }}</td>
+                            <td>{{ $customer->company_type }}</td>
+                            <td>{{ $customer->email }}</td>
+                            <td>{{ $customer->address }}</td>
+                            <td>{{ $customer->ceo }}</td>
+                            <td>{{ $customer->bank }}</td>
+                            <td>{{ $customer->note }}</td>
+                            <td>{{ $customer->account_number }}</td>
+                            <td>{{ $customer->company_phone }}</td>
+                            <td>{{ $customer->mobile_phone }}</td>
+                            <td>{{ $customer->id_meli }}</td>
+                            <td>{{ $customer->postal_code }}</td>
+                            <td>{{ $customer->code_eghtesadi }}</td>
+                            @if(auth()->user()->hasRole('admin'))
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-warning">ویرایش</a>
+                                        <a href="{{ route('customers.message.single', $customer->id) }}" class="btn btn-sm btn-info">ارسال پیام</a>
+                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            @endif
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <form method="POST" action="{{ route('customers.message.bulk.send') }}">
+                @csrf
+                @foreach ($customers as $customer)
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="selected_customers[]" value="{{ $customer->id }}">
+                        <label class="form-check-label" for="customer-{{ $customer->id }}">
+                            {{ $customer->company_name }} - {{ $customer->personal_name }}
+                        </label>
+                    </div>
                 @endforeach
-            </tbody>
-        </table>
-        @if($customers->isEmpty())
-            <div class="alert alert-info text-center mt-4">هیچ مشتری یافت نشد.</div>
-        @endif
-    </div>
+                
+                <div class="form-group mt-3">
+                    <label for="message">پیام:</label>
+                    <textarea name="message" id="message" class="form-control" rows="4" required></textarea>
+                </div>
+            
+                <button type="submit" class="btn btn-success mt-2">ارسال پیام گروهی</button>
+            </form>
 
+            @if($customers->isEmpty())
+                <div class="alert alert-info text-center mt-4">هیچ مشتری یافت نشد.</div>
+            @endif
+        </div>
+    </form>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -131,9 +159,7 @@
     $(document).ready(function () {
         $('#search-form').on('submit', function (e) {
             e.preventDefault();
-
             let query = $('#search').val();
-
             $.ajax({
                 url: '{{ route("customers.ajax") }}',
                 type: 'GET',
@@ -145,6 +171,10 @@
                     alert('خطا در دریافت اطلاعات');
                 }
             });
+        });
+
+        $('#select-all').click(function () {
+            $('input[name="selected_customers[]"]').prop('checked', this.checked);
         });
     });
 </script>

@@ -17,6 +17,7 @@ use Ipe\Sdk\Facades\SmsIr;
 use App\Http\Middleware\CheckUserRole;
 use App\Models\CustomerInfo;
 use App\Models\Lead;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
@@ -97,6 +98,25 @@ Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales'])->group
     Route::get('/customers/{customer}/edit', [CustomerInfoController::class, 'edit'])->name('customers.edit');
 Route::put('/customers/{customer}', [CustomerInfoController::class, 'update'])->name('customers.update');
 Route::delete('/customers/{customer}', [CustomerInfoController::class, 'destroy'])->name('customers.destroy');
+//for mail
+// Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
+// Route::post('/customers/message/send', [CustomerInfoController::class, 'sendMessage'])->name('customers.message.send');
+
+// Route::post('/customers/message/bulk', [CustomerInfoController::class, 'bulkMessageForm'])->name('customers.message.bulk');
+// Route::post('/customers/message/bulk/send', [CustomerInfoController::class, 'sendBulkMessage'])->name('customers.message.bulk.send');
+// نمایش فرم ارسال پیام تکی
+Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
+
+// ارسال پیام تکی
+Route::post('/customers/message/send', [CustomerInfoController::class, 'sendMessage'])->name('customers.message.send');
+
+// نمایش فرم ارسال پیام گروهی
+Route::get('/customers/message/bulk', [CustomerInfoController::class, 'bulkMessageForm'])->name('customers.message.bulk');
+
+// ارسال پیام گروهی
+Route::post('/customers/message/bulk/send', [CustomerInfoController::class, 'sendBulkMessage'])->name('customers.message.bulk.send');
+Route::post('/customers/message/bulk/send', [CustomerInfoController::class, 'sendBulkMessage'])->name('customers.message.bulk.send');
+
 
 });
 //ّForMarketing
@@ -108,4 +128,12 @@ Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_
     Route::post('leads/{lead}/calls', [LeadCallController::class, 'store'])->name('leads.calls.store');
     Route::get('/leads/{lead}', [LeadCallController::class, 'show'])->name('leads.show');
 
+});
+
+Route::get('/test-email', function () {
+    Mail::raw('تست ارسال ایمیل لاراول', function ($message) {
+        $message->to('receiver@example.com')->subject('ایمیل تستی');
+    });
+
+    return 'ایمیل ارسال شد (در صورت تنظیم درست).';
 });
