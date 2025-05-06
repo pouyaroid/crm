@@ -101,11 +101,78 @@ public function showMessageForm($id)
 }
 public function bulkMessageForm(Request $request)
 {
-    $ids = $request->input('selected_customers', []);
-    $customers = CustomerInfo::whereIn('id', $ids)->get();
-    return view('Custumer.email.message-bulk', compact('customers'));
+    $customers = CustomerInfo::all(); // همه مشتری‌ها برای انتخاب
+    return view('Custumer.email.email-group', compact('customers'));
 }
 public function sendMessage(Request $request)
+{
+    dd($request->all());
+    $request->validate([
+        'customer_id' => 'required|exists:customer_infos,id',
+        'message' => 'required|string|max:1000'
+    ]);
+
+    $customer = CustomerInfo::findOrFail($request->customer_id);
+    // 
+
+    Mail::raw($request->message, function ($message) use ($customer) {
+        $message->to($customer->email)
+                ->subject('پیام جدید از سامانه');
+    });
+
+    return redirect()->route('customers.index')->with('success', 'پیام ایمیل ارسال شد.');
+}
+// public function sendBulkMessage(Request $request)
+// {
+//     $request->validate([
+//         'selected_customers' => 'required|array',
+//         'message' => 'required|string',
+//     ]);
+
+//     $customers = CustomerInfo::whereIn('id', $request->selected_customers)->get();
+//     $messageText = $request->message;
+
+//     foreach ($customers as $customer) {
+//         Mail::raw($messageText, function ($mail) use ($customer) {
+//             $mail->to($customer->email)
+//                  ->subject('پیام گروهی');
+//         });
+//     }
+
+//     return back()->with('success', 'ایمیل‌ها با موفقیت ارسال شدند.');
+// }
+public function showCustomerSelection()
+    {
+        $customers = CustomerInfo::all();
+        return view('Custumer.select', compact('customers'));
+    }
+    public function showBulkMessageForm(Request $request)
+    {
+        $ids = $request->input('selected_customers', []);
+        $customers = CustomerInfo::whereIn('id', $ids)->get();
+
+        return view('Custumer.message_form', compact('customers', 'ids'));
+    }
+    public function sendBulkMessage(Request $request)
+    {
+        $request->validate([
+            'message' => 'required|string',
+            'customer_ids' => 'required|array',
+        ]);
+
+        $customers = CustomerInfo::whereIn('id', $request->customer_ids)->get();
+
+        foreach ($customers as $customer) {
+            if ($customer->email) {
+                Mail::raw($request->message, function ($mail) use ($customer) {
+                    $mail->to($customer->email)->subject('مشتری گرامی');
+                });
+            }
+        }
+
+        return redirect()->route('customers.select')->with('success', 'ایمیل‌ها با موفقیت ارسال شدند.');
+    }
+    public function sendSingleMessage(Request $request)
 {
     $request->validate([
         'customer_id' => 'required|exists:customer_infos,id',
@@ -121,26 +188,5 @@ public function sendMessage(Request $request)
 
     return redirect()->route('customers.index')->with('success', 'پیام ایمیل ارسال شد.');
 }
-public function sendBulkMessage(Request $request)
-{
-    $request->validate([
-        'selected_customers' => 'required|array',
-        'message' => 'required|string|max:1000',
-    ]);
-
-    // گرفتن مشتریان انتخاب‌شده
-    $customers = CustomerInfo::whereIn('id', $request->selected_customers)->get();
-
-    // ارسال ایمیل به هر مشتری انتخاب‌شده
-    foreach ($customers as $customer) {
-        if (!empty($customer->email)) {
-            Mail::raw($request->message, function ($message) use ($customer) {
-                $message->to($customer->email)
-                        ->subject('پیام جدید از سامانه');
-            });
-        }
-    }
-
-    return redirect()->route('customers.index')->with('success', 'پیام‌ها با موفقیت ارسال شدند.');
-}
+    
 }

@@ -99,23 +99,23 @@ Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales'])->group
 Route::put('/customers/{customer}', [CustomerInfoController::class, 'update'])->name('customers.update');
 Route::delete('/customers/{customer}', [CustomerInfoController::class, 'destroy'])->name('customers.destroy');
 //for mail
-// Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
-// Route::post('/customers/message/send', [CustomerInfoController::class, 'sendMessage'])->name('customers.message.send');
-
-// Route::post('/customers/message/bulk', [CustomerInfoController::class, 'bulkMessageForm'])->name('customers.message.bulk');
-// Route::post('/customers/message/bulk/send', [CustomerInfoController::class, 'sendBulkMessage'])->name('customers.message.bulk.send');
-// نمایش فرم ارسال پیام تکی
 Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
-
-// ارسال پیام تکی
 Route::post('/customers/message/send', [CustomerInfoController::class, 'sendMessage'])->name('customers.message.send');
 
-// نمایش فرم ارسال پیام گروهی
-Route::get('/customers/message/bulk', [CustomerInfoController::class, 'bulkMessageForm'])->name('customers.message.bulk');
 
-// ارسال پیام گروهی
-Route::post('/customers/message/bulk/send', [CustomerInfoController::class, 'sendBulkMessage'])->name('customers.message.bulk.send');
-Route::post('/customers/message/bulk/send', [CustomerInfoController::class, 'sendBulkMessage'])->name('customers.message.bulk.send');
+// نمایش فرم ارسال پیام تکی
+Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
+Route::post('/customers/message/single/send', [CustomerInfoController::class, 'sendSingleMessage'])->name('customers.message.single.send');
+
+
+// نمایش لیست کاربران با چک‌باکس
+Route::get('/customers/select', [CustomerInfoController::class, 'showCustomerSelection'])->name('customers.select');
+
+// نمایش فرم نوشتن پیام و ارسال گروهی
+Route::post('/customers/message/form', [CustomerInfoController::class, 'showBulkMessageForm'])->name('customers.message.form');
+
+// ارسال ایمیل گروهی
+Route::post('/customers/message/send', [CustomerInfoController::class, 'sendBulkMessage'])->name('customers.message.send');
 
 
 });
