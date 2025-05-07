@@ -21,11 +21,15 @@ class CustomerInfo extends Model
         'id_meli',
         'postal_code',
         'code_eghtesadi',
-        'user_id'
+        'user_id',
+        'sales_agent_id',
     ];
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
+    public function customers()
+    {
+        return $this->hasMany(CustomerInfo::class, 'sales_agent_id'); // فرض بر این است که فیلد `sales_agent_id` در جدول CustomerInfo وجود دارد
+    }
 }

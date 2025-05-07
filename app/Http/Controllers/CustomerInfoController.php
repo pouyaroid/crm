@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\SendCustomerEmail;
 use App\Mail\CustomerMessage;
 use App\Models\CustomerInfo;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 class CustomerInfoController extends Controller
 {
     public function create(){
+        $salesAgents = User::role('sales_agent')->get();
         return view('Custumer.createcustomer');
         
     }
@@ -42,7 +44,7 @@ class CustomerInfoController extends Controller
     
             return redirect()->route('customers.create')->with('success', 'مشتری با موفقیت ثبت شد.');
         } catch (\Exception $e) {
-            // dd($e->getMessage());
+            dd($e->getMessage());
             // ثبت خطا در لاگ
             Log::error('خطا در ثبت مشتری: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
@@ -52,9 +54,18 @@ class CustomerInfoController extends Controller
         }
     }
     public function index()
+    
 {
-    // مثلاً نمایش همه اطلاعات مشتری
-    $customers = CustomerInfo::all();
+    $user = auth()->user(); // گرفتن کاربر وارد شده
+
+    if ($user->hasRole('admin')) {
+        $customers = CustomerInfo::all(); // ادمین همه را می‌بیند
+    } elseif ($user->hasRole('sales_agent')) {
+        $customers = CustomerInfo::where('sales_agent_id', $user->id)->get(); // فقط مشتری‌هایی که به این مسئول فروش اختصاص داده شده‌اند
+    } else {
+        abort(403, 'دسترسی ندارید');
+    }
+
     return view('Custumer.index', compact('customers'));
 }
        
@@ -74,7 +85,8 @@ public function ajax(Request $request)
 public function edit($id)
 {
     $customer = CustomerInfo::findOrFail($id);
-    return view('Custumer.edit', compact('customer'));
+    $salesAgents = User::role('sales_agent')->get();
+    return view('Custumer.edit', compact('customer','salesAgents'));
 }
 
 public function update(Request $request, $id)
@@ -122,25 +134,7 @@ public function sendMessage(Request $request)
 
     return redirect()->route('customers.index')->with('success', 'پیام ایمیل ارسال شد.');
 }
-// public function sendBulkMessage(Request $request)
-// {
-//     $request->validate([
-//         'selected_customers' => 'required|array',
-//         'message' => 'required|string',
-//     ]);
 
-//     $customers = CustomerInfo::whereIn('id', $request->selected_customers)->get();
-//     $messageText = $request->message;
-
-//     foreach ($customers as $customer) {
-//         Mail::raw($messageText, function ($mail) use ($customer) {
-//             $mail->to($customer->email)
-//                  ->subject('پیام گروهی');
-//         });
-//     }
-
-//     return back()->with('success', 'ایمیل‌ها با موفقیت ارسال شدند.');
-// }
 public function showCustomerSelection()
     {
         $customers = CustomerInfo::all();

@@ -29,74 +29,84 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-3">
-            <label class="form-label">نام شخص</label>
-            <input type="text" name="personal_name" class="form-control" value="{{ $customer->personal_name }}" required>
-        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">نام شخص</label>
+                <input type="text" name="personal_name" class="form-control" value="{{ $customer->personal_name }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">نام شرکت</label>
+                <input type="text" name="company_name" class="form-control" value="{{ $customer->company_name }}">
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">نام شرکت</label>
-            <input type="text" name="company_name" class="form-control" value="{{ $customer->company_name }}">
-        </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">نوع شرکت</label>
+                <input type="text" name="company_type" class="form-control" value="{{ $customer->company_type }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">ایمیل</label>
+                <input type="email" name="email" class="form-control" value="{{ $customer->email }}">
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">نوع شرکت</label>
-            <input type="text" name="company_type" class="form-control" value="{{ $customer->company_type }}">
-        </div>
+            <div class="col-12 mb-3">
+                <label class="form-label">آدرس</label>
+                <textarea name="address" class="form-control" rows="2">{{ $customer->address }}</textarea>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">ایمیل</label>
-            <input type="email" name="email" class="form-control" value="{{ $customer->email }}">
-        </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">مدیرعامل</label>
+                <input type="text" name="ceo" class="form-control" value="{{ $customer->ceo }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">بانک</label>
+                <input type="text" name="bank" class="form-control" value="{{ $customer->bank }}">
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">آدرس</label>
-            <textarea name="address" class="form-control" rows="2">{{ $customer->address }}</textarea>
-        </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">شماره حساب</label>
+                <input type="text" name="account_number" class="form-control" value="{{ $customer->account_number }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">شماره شرکت</label>
+                <input type="text" name="company_phone" class="form-control" value="{{ $customer->company_phone }}">
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">مدیرعامل</label>
-            <input type="text" name="ceo" class="form-control" value="{{ $customer->ceo }}">
-        </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">شماره موبایل</label>
+                <input type="text" name="mobile_phone" class="form-control" value="{{ $customer->mobile_phone }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">کد ملی</label>
+                <input type="text" name="id_meli" class="form-control" value="{{ $customer->id_meli }}">
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">بانک</label>
-            <input type="text" name="bank" class="form-control" value="{{ $customer->bank }}">
-        </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">کد پستی</label>
+                <input type="text" name="postal_code" class="form-control" value="{{ $customer->postal_code }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">کد اقتصادی</label>
+                <input type="text" name="code_eghtesadi" class="form-control" value="{{ $customer->code_eghtesadi }}">
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">شماره حساب</label>
-            <input type="text" name="account_number" class="form-control" value="{{ $customer->account_number }}">
-        </div>
+            <div class="col-12 mb-3">
+                <label class="form-label">توضیحات</label>
+                <textarea name="note" class="form-control" rows="2">{{ $customer->note }}</textarea>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">شماره شرکت</label>
-            <input type="text" name="company_phone" class="form-control" value="{{ $customer->company_phone }}">
-        </div>
+            <!-- انتخاب مسئول فروش -->
+            <div class="col-md-6 mb-3">
+                <label class="form-label">مسئول فروش</label>
+                <select name="sales_agent_id" class="form-select">
+                    <option value="">-- انتخاب کنید --</option>
+                    @foreach ($salesAgents as $agent)
+                        <option value="{{ $agent->id }}" {{ $customer->sales_agent_id == $agent->id ? 'selected' : '' }}>
+                            {{ $agent->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">شماره موبایل</label>
-            <input type="text" name="mobile_phone" class="form-control" value="{{ $customer->mobile_phone }}">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">کد ملی</label>
-            <input type="text" name="id_meli" class="form-control" value="{{ $customer->id_meli }}">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">کد پستی</label>
-            <input type="text" name="postal_code" class="form-control" value="{{ $customer->postal_code }}">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">کد اقتصادی</label>
-            <input type="text" name="code_eghtesadi" class="form-control" value="{{ $customer->code_eghtesadi }}">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">توضیحات</label>
-            <textarea name="note" class="form-control" rows="2">{{ $customer->note }}</textarea>
         </div>
 
         <div class="d-flex justify-content-between">
@@ -109,3 +119,4 @@
 
 </body>
 </html>
+
