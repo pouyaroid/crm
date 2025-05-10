@@ -126,7 +126,9 @@ Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_
     Route::get('/marketing/leads/index',[LeadController::class,'index'])->name('leads.index');
     Route::get('leads/{lead}/calls/create', [LeadCallController::class, 'create'])->name('leads.calls.create');
     Route::post('leads/{lead}/calls', [LeadCallController::class, 'store'])->name('leads.calls.store');
-    Route::get('/leads/{lead}', [LeadCallController::class, 'show'])->name('leads.show');
+    Route::get('marketing/leads/{lead}', [LeadCallController::class, 'show'])->name('leads.show');
+    Route::get('marketing/leads/{lead}/edit', [LeadController::class, 'edit'])->name('leads.edit');
+    Route::put('marketing/leads/{lead}', [LeadController::class, 'update'])->name('leads.update');
 
 });
 

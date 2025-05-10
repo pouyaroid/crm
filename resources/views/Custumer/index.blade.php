@@ -75,7 +75,11 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="m-0 text-muted">نقش کاربر: {{ implode(', ', auth()->user()->getRoleNames()->toArray()) }}</p>
+        <div class="container">
+            <strong>کاربر:</strong> {{ auth()->user()->name }} |
+            <strong>نقش:</strong> {{ implode(', ', auth()->user()->getRoleNames()->toArray()) }}
+        </div>
+      
         <a href="{{ route('customers.select') }}" class="btn btn-success shadow">ارسال پیام گروهی</a>
     </div>
 
