@@ -131,41 +131,49 @@
         .calls-title i { font-size: 1.38rem;}
     }
 </style>
-
 @if($lead->calls->count())
-<div class='vazir'>
-    <div class='calls-card'>
-        <div class='calls-title'>
-            <i class='bi bi-telephone-outbound'></i>
-            <span>تماس‌های خروجی</span>
-        </div>
-        <div class='row gy-4'>
-            @foreach($lead->calls as $call)
-                <div class='col-12 col-sm-12 col-md-6 col-xl-4 d-flex'>
-                    <div class='card call-card w-100 shadow-sm mb-2'>
-                        <div class='corner-bg'></div>
-                        <div class='card-body d-flex flex-column justify-content-center h-100'>
-                            <div class='d-flex align-items-center justify-content-between flex-wrap mb-2'>
-                                <div class='call-summary'>
-                                    <i class='bi bi-bookmark-check-fill'></i>
-                                    {{ $call->call_summary }}
+    <div class='vazir'>
+        <div class='calls-card'>
+            <div class='calls-title'>
+                <i class='bi bi-telephone-outbound'></i>
+                <span>تماس‌های خروجی</span>
+            </div>
+            <div class='row gy-4'>
+                @foreach($lead->calls as $call)
+                    <div class='col-12 col-sm-12 col-md-6 col-xl-4 d-flex'>
+                        <div class='card call-card w-100 shadow-sm mb-2'>
+                            <div class='corner-bg'></div>
+                            <div class='card-body d-flex flex-column justify-content-center h-100'>
+                                <div class='d-flex align-items-center justify-content-between flex-wrap mb-2'>
+                                    <div class='call-summary'>
+                                        <i class='bi bi-bookmark-check-fill'></i>
+                                        {{ $call->call_summary }}
+                                    </div>
+                                    <div class='call-date'>
+                                        <i class='bi bi-clock'></i>
+                                        {{ jdate($call->call_time)->format('Y/m/d H:i') }}
+                                    </div>
                                 </div>
-                                <div class='call-date'>
-                                    <i class='bi bi-clock'></i>
-                                    {{ jdate($call->call_time)->format('Y/m/d H:i') }}
-                                </div>
+                                @if(!empty($call->notes))
+                                    <div class='call-note'>
+                                        <i class='bi bi-chat-dots'></i>
+                                        {{ $call->notes }}
+                                    </div>
+                                @endif
                             </div>
-                            @if(!empty($call->notes))
-                                <div class='call-note'>
-                                    <i class='bi bi-chat-dots'></i>
-                                    {{ $call->notes }}
-                                </div>
-                            @endif
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
     </div>
-</div>
+@else
+    <div class="vazir">
+        <div class="calls-card text-center py-5">
+            <div class="calls-title justify-content-center">
+                <i class='bi bi-telephone-x-fill'></i>
+                <span>تماسی ثبت نشده است</span>
+            </div>
+        </div>
+    </div>
 @endif
