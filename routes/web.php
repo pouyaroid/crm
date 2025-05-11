@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerInfoController;
 use App\Http\Controllers\LeadCallController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadConversionController;
+use App\Http\Controllers\LeadReportController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesController;
@@ -131,6 +132,8 @@ Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_
     Route::get('marketing/leads/{lead}/edit', [LeadController::class, 'edit'])->name('leads.edit');
     Route::put('marketing/leads/{lead}', [LeadController::class, 'update'])->name('leads.update');
     Route::post('/leads/{id}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
+    Route::get('/leads/report', [LeadReportController::class, 'index'])->name('leads.report');
+
 
 });
 

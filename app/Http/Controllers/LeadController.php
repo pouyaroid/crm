@@ -91,4 +91,5 @@ public function update(Request $request, Lead $lead)
 
     return redirect()->route('leads.index')->with('success', 'اطلاعات مشتری احتمالی با موفقیت ویرایش شد.');
 }
+
 }
