@@ -6,7 +6,15 @@
 
 <div class="container mt-4">
     <h3 class="mb-3">لیست مشتریان احتمالی</h3>
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <a href="{{ route('leads.create') }}" class="btn btn-success mb-3">+ افزودن مشتری احتمالی</a>
+
     <form action="{{ route('leads.index') }}" method="GET" class="row g-2 mb-3">
         <div class="col-md-2">
             <input type="text" name="search" class="form-control" placeholder="نام یا تلفن" value="{{ request('search') }}">
@@ -37,7 +45,6 @@
             <button type="submit" class="btn btn-outline-primary">جستجو</button>
         </div>
     </form>
-    
 
     <table class="table table-bordered">
         <thead class="table-light">
@@ -49,7 +56,7 @@
                 <th>سطح علاقه</th>
                 <th>وضعیت</th>
                 <th>یادداشت</th>
-                <th>عملیات</th> {{-- ستون جدید برای دکمه‌ها --}}
+                <th>عملیات</th>
             </tr>
         </thead>
         <tbody>
@@ -64,9 +71,12 @@
                 <td>{{ $lead->note }}</td>
                 <td>
                     <a href="{{ route('leads.calls.create', $lead->id) }}" class="btn btn-sm btn-primary mb-1">افزودن تماس</a>
-                    <a href="{{ route('leads.show', $lead->id) }}" class="btn btn-sm btn-secondary">مشاهده تماس‌ها</a>
+                    <a href="{{ route('leads.show', $lead->id) }}" class="btn btn-sm btn-secondary mb-1">مشاهده تماس‌ها</a>
                     <a href="{{ route('leads.edit', $lead->id) }}" class="btn btn-sm btn-warning mb-1">ویرایش</a>
-
+                    <form action="{{ route('leads.convert', $lead->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-success mb-1">تبدیل به مشتری</button>
+                    </form>
                 </td>
             </tr>
             @endforeach
@@ -77,3 +87,4 @@
         {{ $leads->links() }}
     </div>
 </div>
+
