@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
-
+use App\Http\Controllers\ProductTrackingController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -100,6 +100,9 @@ Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales'])->group
     Route::get('/customers/{customer}/edit', [CustomerInfoController::class, 'edit'])->name('customers.edit');
 Route::put('/customers/{customer}', [CustomerInfoController::class, 'update'])->name('customers.update');
 Route::delete('/customers/{customer}', [CustomerInfoController::class, 'destroy'])->name('customers.destroy');
+//رهگییری محصول
+Route::get('/tracking/create', [ProductTrackingController::class, 'createTracking'])->name('tracking.create.form');
+Route::post('/tracking/store', [ProductTrackingController::class, 'trackingStore'])->name('tracking.store');
 //for mail
 Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
 Route::post('/customers/message/send', [CustomerInfoController::class, 'sendMessage'])->name('customers.message.send');
@@ -136,6 +139,15 @@ Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_
 
 
 });
+Route::get('/tracking', [ProductTrackingController::class, 'index'])->name('tracking.index');
+Route::get('/tracking/search', function () {
+    return view('ProductTracking.search');
+})->name('tracking.search');
+//روت هایی که نیاز به لاگین ندارند
+Route::post('/tracking/search', [ProductTrackingController::class, 'search'])->name('product.tracking.search');
+
+
+
 
 Route::get('/test-email', function () {
     Mail::raw('تست ارسال ایمیل لاراول', function ($message) {
