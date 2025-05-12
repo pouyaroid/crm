@@ -32,15 +32,14 @@ class ComplaintSubmitted extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable)
     {
-        return (new MailMessage)
-        ->subject('ثبت شکایت شما با موفقیت انجام شد')
-        ->greeting('سلام ' . $notifiable->name . ' عزیز')
-        ->line('شکایت شما با عنوان "' . $this->complaint->title . '" با موفقیت ثبت شد.')
-        ->line('تیم پشتیبانی در حال بررسی شکایت شماست و در اسرع وقت پاسخ داده خواهد شد.')
-        ->line('شماره سفارش: ' . $this->complaint->ordernumber)
-        ->line('از شکیبایی شما سپاس‌گزاریم.');
+        return (new \Illuminate\Notifications\Messages\MailMessage)
+            ->view('emails.complaints.submitted', [
+                'user' => $notifiable,
+                'complaint' => $this->complaint
+            ])
+            ->subject('تأیید ثبت شکایت');
     }
 
     /**

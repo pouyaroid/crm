@@ -36,9 +36,7 @@ class LeadController extends Controller
     }
     public function index(Request $request){
         $query = Lead::query();
-
-        $query = Lead::query();
-
+    
         // جستجو بر اساس نام یا تلفن
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -64,9 +62,10 @@ class LeadController extends Controller
             $query->where('status', $request->status);
         }
     
-        $leads = $query->latest()->paginate(20)->withQueryString();
+        // صفحه‌بندی نهایی پس از فیلتر
+        $leads = $query->latest()->paginate(15)->withQueryString();
+    
         return view('leads.index', compact('leads'));
-        
     }
     public function create(){
         return view('leads.create');

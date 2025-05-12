@@ -158,6 +158,9 @@
                         @endif
                     </tr>
                 @endforeach
+                <div class="d-flex justify-content-center">
+                    {{ $customers->links() }}
+                </div>
             </tbody>
         </table>
 

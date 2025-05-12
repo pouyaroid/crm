@@ -104,7 +104,7 @@
         <div class='search-bar'>
             <form action='{{ route('users.index') }}' method='GET' class='w-100'>
                 <div class='input-group search-input'>
-                    <input type='text' name='search' class='form-control' placeholder='جستجوی کاربر...' aria-label='Search'>
+                    <input type='text' name='search' class='form-control' placeholder='جستجوی کاربر...' aria-label='Search' value='{{ request("search") }}'>
                     <button class='btn btn-primary' type='submit'><i class='bi bi-search'></i></button>
                 </div>
             </form>
@@ -137,6 +137,10 @@
                     <p class='no-users'>هیچ کاربری یافت نشد. یک کاربر جدید ایجاد کنید!</p>
                 </div>
             @endforelse
+            <div class="d-flex justify-content-center">
+                {{ $users->links() }}
+            </div>
+            
         </div>
     </div>
 

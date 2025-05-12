@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendCustomerEmail;
+use App\Mail\BulkMessageMail;
 use App\Mail\CustomerMessage;
 use App\Models\CustomerInfo;
 use App\Models\User;
@@ -59,7 +60,7 @@ class CustomerInfoController extends Controller
     $user = auth()->user(); // گرفتن کاربر وارد شده
 
     if ($user->hasRole('admin')) {
-        $customers = CustomerInfo::all(); // ادمین همه را می‌بیند
+        $customers = CustomerInfo::orderBy('created_at', 'desc')->paginate(20)->withQueryString();// ادمین همه را می‌بیند
     } elseif ($user->hasRole('sales_agent')) {
         $customers = CustomerInfo::where('sales_agent_id', $user->id)->get(); // فقط مشتری‌هایی که به این مسئول فروش اختصاص داده شده‌اند
     } else {
@@ -148,24 +149,22 @@ public function showCustomerSelection()
         return view('Custumer.message_form', compact('customers', 'ids'));
     }
     public function sendBulkMessage(Request $request)
-    {
-        $request->validate([
-            'message' => 'required|string',
-            'customer_ids' => 'required|array',
-        ]);
+{
+    $request->validate([
+        'message' => 'required|string',
+        'customer_ids' => 'required|array',
+    ]);
 
-        $customers = CustomerInfo::whereIn('id', $request->customer_ids)->get();
+    $customers = CustomerInfo::whereIn('id', $request->customer_ids)->get();
 
-        foreach ($customers as $customer) {
-            if ($customer->email) {
-                Mail::raw($request->message, function ($mail) use ($customer) {
-                    $mail->to($customer->email)->subject('مشتری گرامی');
-                });
-            }
+    foreach ($customers as $customer) {
+        if ($customer->email) {
+            Mail::to($customer->email)->send(new BulkMessageMail($customer, $request->message));
         }
-
-        return redirect()->route('customers.select')->with('success', 'ایمیل‌ها با موفقیت ارسال شدند.');
     }
+
+    return redirect()->route('customers.select')->with('success', 'ایمیل‌ها با قالب سفارشی ارسال شدند.');
+}
     public function sendSingleMessage(Request $request)
 {
     $request->validate([

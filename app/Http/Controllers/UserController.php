@@ -32,10 +32,22 @@ class UserController extends Controller
 
 
     }
-    public function index()
-{
-    $users = User::all(); // دریافت همه کاربران
-    return view('users.index', compact('users'));
-}
+    public function index(Request $request)
+    {
+        $query = User::query();
+    
+        // جستجو بر اساس نام یا ایمیل
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
+        }
+    
+        // صفحه‌بندی
+        $users = $query->latest()->paginate(12)->withQueryString();
+    
+        return view('users.index', compact('users'));
+    }
 
 }
