@@ -103,6 +103,9 @@ Route::delete('/customers/{customer}', [CustomerInfoController::class, 'destroy'
 //رهگییری محصول
 Route::get('/tracking/create', [ProductTrackingController::class, 'createTracking'])->name('tracking.create.form');
 Route::post('/tracking/store', [ProductTrackingController::class, 'trackingStore'])->name('tracking.store');
+Route::get('/tracking', [ProductTrackingController::class, 'index'])->name('tracking.index');
+Route::get('/tracking/{productTracking}/edit', [ProductTrackingController::class, 'edit'])->name('tracking.edit');
+Route::put('/tracking/{productTracking}', [ProductTrackingController::class, 'update'])->name('tracking.update'); // 
 //for mail
 Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
 Route::post('/customers/message/send', [CustomerInfoController::class, 'sendMessage'])->name('customers.message.send');
@@ -139,7 +142,7 @@ Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_
 
 
 });
-Route::get('/tracking', [ProductTrackingController::class, 'index'])->name('tracking.index');
+
 Route::get('/tracking/search', function () {
     return view('ProductTracking.search');
 })->name('tracking.search');
