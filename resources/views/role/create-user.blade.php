@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
+@extends('layouts.app')
+@section('title','ساخت کاربر جدید')
+@section('content')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ساخت کاربر جدید</title>
@@ -111,3 +111,4 @@
 </script>
 </body>
 </html>
+@endsection

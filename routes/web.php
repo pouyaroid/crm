@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\FormBuilderController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\CustomerInfoController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\LeadCallController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadConversionController;
@@ -24,6 +26,8 @@ use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
 use App\Http\Controllers\ProductTrackingController;
+use App\Http\Controllers\PublicFormController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -50,6 +54,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
 Route::get('admin/userslist', [UserController::class, 'index'])->name('users.index');
 Route::get('/adminpanel',[AdminController::class,'adminPanel'])->name('admin.panel');
+
+
+
 
 
 });
@@ -139,6 +146,8 @@ Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_
     Route::put('marketing/leads/{lead}', [LeadController::class, 'update'])->name('leads.update');
     Route::post('/leads/{id}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
     Route::get('/leads/report', [LeadReportController::class, 'index'])->name('leads.report');
+
+
 
 
 });

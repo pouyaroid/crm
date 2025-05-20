@@ -1,3 +1,6 @@
+@extends('layouts.app')
+@section('title','ساخت گزارش')
+@section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet">
 <style> body { font-family: 'Vazirmatn', sans-serif; direction: rtl; } </style>
@@ -66,3 +69,4 @@
         <button type="submit" class="btn btn-primary">ذخیره</button>
     </form>
 </div>
+@endsection

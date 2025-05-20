@@ -1,6 +1,6 @@
-{{-- استایل‌ها --}}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet">
+@extends('layouts.app')
+@section('title','گزارش سرنخ ها')
+@section('content')
 <style>
     body { font-family: 'Vazirmatn', sans-serif; direction: rtl; background-color: #f8f9fa; }
     .custom-date-inputs { display: flex; gap: 1rem; }
@@ -108,3 +108,4 @@
     });
     @endif
 </script>
+@endsection
