@@ -63,4 +63,9 @@ public function salesAgent()
 {
     return $this->belongsTo(User::class, 'sales_agent_id');
 }
+public function leads()
+{
+    return $this->hasMany(Lead::class);
+}
+
 }

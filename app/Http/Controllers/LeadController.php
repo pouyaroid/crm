@@ -18,6 +18,7 @@ class LeadController extends Controller
                 'note' => 'nullable|string',
                 'status' => 'required|in:در انتظار تماس,تماس گرفته شد,تبدیل به مشتری شد',
             ]);
+            $validated['user_id'] = auth()->id();
     
             Lead::create($validated);
     
@@ -31,11 +32,11 @@ class LeadController extends Controller
                 ->with('error', 'خطا در ثبت اطلاعات. لطفاً دوباره تلاش کنید.');
         }
        
-       
+        dd($e->getMessage());
 
     }
     public function index(Request $request){
-        $query = Lead::query();
+        $query = Lead::with('user');
     
         // جستجو بر اساس نام یا تلفن
         if ($request->filled('search')) {

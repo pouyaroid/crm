@@ -11,6 +11,10 @@ class Lead extends Model
         return $this->hasMany(LeadCall::class);
     }
     protected $fillable = [
-        'name', 'phone', 'company', 'source', 'interest_level', 'note', 'status'
+        'name', 'phone', 'company', 'source', 'interest_level', 'note', 'status','user_id'
     ];
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }

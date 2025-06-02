@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -176,6 +177,11 @@
                     <i class="bi bi-gear"></i> تنظیمات
                 </a>
             </li>
+            <li class="nav-item d-md-none">
+                <a class="nav-link text-danger" href="javascript:void(0);" onclick="toggleSidebar()">
+                    <i class="bi bi-x-lg"></i> بستن منو
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -185,7 +191,7 @@
     <!-- Main Content -->
     <div class="content-wrapper">
         <!-- Toggle Sidebar -->
-        <button class="btn btn-toggle d-md-none mb-3" onclick="toggleSidebar()">
+        <button class="btn btn-toggle d-md-none mb-3" id="menuToggleBtn">
             <i class="bi bi-list"></i> منو
         </button>
 
@@ -196,12 +202,29 @@
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function toggleSidebar() {
+    function toggleSidebar(forceClose = false) {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        sidebar.classList.toggle('show');
-        overlay.classList.toggle('show');
+        if(forceClose){
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        } else {
+            const isOpen = sidebar.classList.contains('show');
+            sidebar.classList.toggle('show', !isOpen);
+            overlay.classList.toggle('show', !isOpen);
+        }
     }
+
+    document.getElementById('menuToggleBtn').addEventListener('click', function () {
+        toggleSidebar();
+    });
+
+    // Optionally hide on resize to md+ screens
+    window.addEventListener('resize', function(){
+        if(window.innerWidth >= 768){
+            toggleSidebar(true);
+        }
+    });
 </script>
 
 </body>
