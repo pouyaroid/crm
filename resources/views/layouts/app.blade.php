@@ -172,10 +172,13 @@
                     <i class="bi bi-clipboard2-data"></i> گزارش سرنخ‌ها
                 </a>
             </li>
-            <li class="nav-item mt-3">
-                <a class="nav-link" href="#">
-                    <i class="bi bi-gear"></i> تنظیمات
-                </a>
+            <li class="nav-item">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="nav-link btn btn-link text-start {{ request()->routeIs('logout') ? 'active' : '' }}">
+                        <i class="bi bi-box-arrow-right"></i> خروج
+                    </button>
+                </form>
             </li>
             <li class="nav-item d-md-none">
                 <a class="nav-link text-danger" href="javascript:void(0);" onclick="toggleSidebar()">

@@ -32,7 +32,7 @@ class LeadController extends Controller
                 ->with('error', 'خطا در ثبت اطلاعات. لطفاً دوباره تلاش کنید.');
         }
        
-        dd($e->getMessage());
+   
 
     }
     public function index(Request $request){
