@@ -27,6 +27,7 @@ use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
 use App\Http\Controllers\ProductTrackingController;
 use App\Http\Controllers\PublicFormController;
+use App\Http\Controllers\TodoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -158,7 +159,19 @@ Route::get('/tracking/search', function () {
 })->name('tracking.search');
 //روت هایی که نیاز به لاگین ندارند
 Route::post('/tracking/search', [ProductTrackingController::class, 'search'])->name('product.tracking.search');
+//Todo
 
+Route::middleware(['auth', 'role:employee|admin'])->group(function () {
+    Route::get('/todos', [TodoController::class, 'index'])->name('todos.index');
+    Route::get('/todos/create', [TodoController::class, 'create'])->name('todos.create');
+    Route::post('/todos', [TodoController::class, 'store'])->name('todos.store');
+    Route::get('/todos/user/{user}', [TodoController::class, 'userTodos'])->name('todos.user');
+
+    Route::get('/todos/{todo}', [TodoController::class, 'show'])->name('todos.show');
+    Route::get('/todos/{todo}/edit', [TodoController::class, 'edit'])->name('todos.edit');
+    Route::put('/todos/{todo}', [TodoController::class, 'update'])->name('todos.update');
+    Route::delete('/todos/{todo}', [TodoController::class, 'destroy'])->name('todos.destroy');
+});
 
 
 
