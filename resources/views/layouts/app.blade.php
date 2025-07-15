@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -24,7 +23,7 @@
 
         .sidebar {
             width: 260px;
-            background: linear-gradient(to bottom, #1c1f24, #343a40);
+            background: linear-gradient(to bottom right, #212529, #2c3e50);
             color: white;
             padding-top: 1rem;
             position: fixed;
@@ -32,16 +31,19 @@
             top: 0;
             bottom: 0;
             z-index: 1050;
-            transition: transform 0.3s ease;
-            box-shadow: -3px 0 8px rgba(0, 0, 0, 0.3);
+            transform: translateX(0);
+            transition: transform 0.3s ease, visibility 0.3s ease;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.4);
         }
 
         .sidebar h4 {
             font-size: 1.4rem;
-            font-weight: 700;
+            font-weight: 800;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
             color: #ffc107;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .sidebar .nav-link {
@@ -49,7 +51,7 @@
             align-items: center;
             padding: 0.75rem 1.2rem;
             color: #ced4da;
-            transition: background-color 0.2s, color 0.2s;
+            transition: all 0.3s ease;
             border-right: 3px solid transparent;
         }
 
@@ -58,18 +60,37 @@
             font-size: 1.2rem;
         }
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background-color: #495057;
-            color: #ffffff;
+        .sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
             border-right: 3px solid #ffc107;
+            color: #ffffff;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #ffc107;
+            color: #212529;
+            border-right: 3px solid #ffffff;
+            font-weight: bold;
+        }
+
+        .sidebar .nav-link.active i {
+            color: #212529;
+        }
+
+        .sidebar .nav-link:not(:last-child) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .content-wrapper {
-            margin-right: 260px;
             padding: 2rem;
             flex-grow: 1;
             background: #f8f9fa;
+        }
+
+        @media (min-width: 768px) {
+            .content-wrapper {
+                margin-right: 260px;
+            }
         }
 
         .btn-toggle {
@@ -86,10 +107,14 @@
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(100%);
+                visibility: hidden;
+                background: rgba(33, 37, 41, 0.95);
+                backdrop-filter: blur(10px);
             }
 
             .sidebar.show {
                 transform: translateX(0);
+                visibility: visible;
             }
 
             .overlay {
@@ -114,7 +139,7 @@
 
 <div class="container-wrapper">
     <!-- Sidebar -->
-    <div class="sidebar d-md-block" id="sidebar">
+    <div class="sidebar d-none d-md-block" id="sidebar">
         <h4><i class="bi bi-speedometer2 me-2"></i>CRM رشد</h4>
         <ul class="nav flex-column">
             <li class="nav-item">
@@ -175,8 +200,8 @@
             <li class="nav-item">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="nav-link btn btn-link text-start {{ request()->routeIs('logout') ? 'active' : '' }}">
-                        <i class="bi bi-box-arrow-right"></i> خروج
+                    <button type="submit" class="nav-link btn btn-link text-start text-danger {{ request()->routeIs('logout') ? 'active' : '' }}">
+                        <i class="bi bi-box-arrow-left"></i> خروج
                     </button>
                 </form>
             </li>
@@ -193,7 +218,6 @@
 
     <!-- Main Content -->
     <div class="content-wrapper">
-        <!-- Toggle Sidebar -->
         <button class="btn btn-toggle d-md-none mb-3" id="menuToggleBtn">
             <i class="bi bi-list"></i> منو
         </button>
@@ -208,13 +232,20 @@
     function toggleSidebar(forceClose = false) {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        if(forceClose){
+
+        if (forceClose) {
             sidebar.classList.remove('show');
+            sidebar.classList.add('d-none');
             overlay.classList.remove('show');
         } else {
             const isOpen = sidebar.classList.contains('show');
             sidebar.classList.toggle('show', !isOpen);
             overlay.classList.toggle('show', !isOpen);
+            if (!isOpen) {
+                sidebar.classList.remove('d-none');
+            } else {
+                sidebar.classList.add('d-none');
+            }
         }
     }
 
@@ -222,9 +253,8 @@
         toggleSidebar();
     });
 
-    // Optionally hide on resize to md+ screens
-    window.addEventListener('resize', function(){
-        if(window.innerWidth >= 768){
+    window.addEventListener('resize', function () {
+        if (window.innerWidth >= 768) {
             toggleSidebar(true);
         }
     });

@@ -114,7 +114,7 @@
                 <div class='container'>
                     <div class='row justify-content-center'>
                         <div class='col-lg-8 text-center'>
-                            <h1 class='hero-title'>به سامانه شکایت مشتریان کاوه سلولز زرین خوش آمدید</h1>
+                            <h1 class='hero-title'>به سامانه شکایت مشتریان خوش آمدید</h1>
             
                             <div class='d-flex justify-content-center gap-3'>
                                 @if (Route::has('login'))
