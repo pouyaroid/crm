@@ -71,5 +71,12 @@ public function todos()
 {
     return $this->hasMany(Todo::class);
 }
-
+public function supervisors()
+{
+    return $this->belongsToMany(User::class, 'user_supervisors', 'user_id', 'supervisor_id');
 }
+
+public function subordinates()
+{
+    return $this->belongsToMany(User::class, 'user_supervisors', 'supervisor_id', 'user_id');
+}}

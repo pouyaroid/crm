@@ -27,6 +27,7 @@ use Spatie\Permission\Middleware\RoleMiddleware as MiddlewareRoleMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
 use App\Http\Controllers\ProductTrackingController;
 use App\Http\Controllers\PublicFormController;
+use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\TodoController;
 
 Route::get('/', function () {
@@ -55,6 +56,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
 Route::get('admin/userslist', [UserController::class, 'index'])->name('users.index');
 Route::get('/adminpanel',[AdminController::class,'adminPanel'])->name('admin.panel');
+//supervisors
+Route::get('/supervisors', [SupervisorController::class, 'index'])->name('supervisors.index');
+Route::post('/supervisors', [SupervisorController::class, 'store'])->name('supervisors.store');
 
 
 
@@ -161,7 +165,7 @@ Route::get('/tracking/search', function () {
 Route::post('/tracking/search', [ProductTrackingController::class, 'search'])->name('product.tracking.search');
 //Todo
 
-Route::middleware(['auth', 'role:employee|admin'])->group(function () {
+Route::middleware(['auth', 'role:employee|admin|supervisor'])->group(function () {
     Route::get('/todos', [TodoController::class, 'index'])->name('todos.index');
     Route::get('/todos/create', [TodoController::class, 'create'])->name('todos.create');
     Route::post('/todos', [TodoController::class, 'store'])->name('todos.store');
