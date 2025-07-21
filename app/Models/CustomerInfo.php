@@ -32,4 +32,8 @@ class CustomerInfo extends Model
     {
         return $this->hasMany(CustomerInfo::class, 'sales_agent_id'); // فرض بر این است که فیلد `sales_agent_id` در جدول CustomerInfo وجود دارد
     }
+    public function cases()
+    {
+        return $this->hasMany(CustomerCase::class, 'customer_id'); // 'customer_id' نام ستون کلید خارجی در جدول customer_cases
+    }
 }

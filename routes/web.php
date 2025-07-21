@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\CustomerCaseController;
 use App\Http\Controllers\CustomerInfoController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\LeadCallController;
@@ -107,6 +108,8 @@ Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales'])->group
     Route::get('/customers/create',[CustomerInfoController::class,'create'])->name('customers.create');
     Route::post('/customers',[CustomerInfoController::class,'store'])->name('customers.store');
     Route::get('/customers/index', [CustomerInfoController::class, 'index'])->name('customers.index');
+    Route::get('/customers/ajax', [CustomerInfoController::class, 'ajax'])->name('customers.ajax');
+
     // Route::get('/customers/index/{id}', [CustomerInfoController::class, 'index'])->name('customers.show');
     Route::get('/customers/ajax', [CustomerInfoController::class, 'ajax'])->name('customers.ajax');
     Route::get('/customers/{customer}/edit', [CustomerInfoController::class, 'edit'])->name('customers.edit');
@@ -121,6 +124,11 @@ Route::put('/tracking/{productTracking}', [ProductTrackingController::class, 'up
 //for mail
 Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
 Route::post('/customers/message/send', [CustomerInfoController::class, 'sendMessage'])->name('customers.message.send');
+//for CaseCustomer
+Route::get('customers/{customer}/cases/create', [CustomerCaseController::class, 'create'])->name('cases.create');
+Route::post('customers/{customer}/cases', [CustomerCaseController::class, 'store'])->name('cases.store');
+Route::get('customers/{customer}/cases', [CustomerCaseController::class, 'index'])->name('customers.cases.index');
+Route::post('customers/{customer}/cases', [CustomerCaseController::class, 'store'])->name('customers.cases.store');
 
 
 // نمایش فرم ارسال پیام تکی

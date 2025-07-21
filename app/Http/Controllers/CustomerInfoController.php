@@ -54,26 +54,29 @@ class CustomerInfoController extends Controller
             return redirect()->route('customers.create')->with('error', 'خطایی در ثبت اطلاعات رخ داد. لطفاً دوباره تلاش کنید.');
         }
     }
-    public function index()
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
     
-{
-    $user = auth()->user(); // گرفتن کاربر وارد شده
-
-    if ($user->hasRole('admin')) {
-        $customers = CustomerInfo::orderBy('created_at', 'desc')->paginate(20)->withQueryString();// ادمین همه را می‌بیند
-    } elseif ($user->hasRole('sales_agent')) {
-        $customers = CustomerInfo::where('sales_agent_id', $user->id)->get(); // فقط مشتری‌هایی که به این مسئول فروش اختصاص داده شده‌اند
-    } else {
-        abort(403, 'دسترسی ندارید');
+        $query = CustomerInfo::query();
+    
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('personal_name', 'LIKE', "%$search%")
+                  ->orWhere('company_name', 'LIKE', "%$search%")
+                  ->orWhere('mobile_phone', 'LIKE', "%$search%");
+            });
+        }
+    
+        $customers = $query->paginate(10);
+    
+        return view('Custumer.index', compact('customers'));
     }
-
-    return view('Custumer.index', compact('customers'));
-}
        
 public function ajax(Request $request)
 {
-    
     $query = $request->search;
+
     $customers = CustomerInfo::when($query, function ($q) use ($query) {
         $q->where('personal_name', 'like', "%$query%")
             ->orWhere('company_name', 'like', "%$query%")
@@ -81,7 +84,13 @@ public function ajax(Request $request)
             ->orWhere('email', 'like', "%$query%");
     })->latest()->paginate(15);
 
-    return view('Custumer.partials.table', compact('customers'))->render();
+    $tableView = view('customers.partials.table', compact('customers'))->render();
+    $cardsView = view('customers.partials.cards', compact('customers'))->render();
+
+    return response()->json([
+        'table' => $tableView,
+        'cards' => $cardsView,
+    ]);
 }
 public function edit($id)
 {
