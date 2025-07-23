@@ -1,136 +1,94 @@
-
 @extends('layouts.app')
 
 @section('title', 'لیست تسک‌ها')
 
 @section('content')
     <style>
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        .container {
+        .todo-wrapper {
             max-width: 1200px;
             margin: 0 auto;
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
         }
 
-        h2 {
-            color: #343a40;
+        .todo-wrapper h2 {
+            font-weight: bold;
+            color: #212529;
         }
 
-        .table {
-            --bs-table-bg: #fff;
-            --bs-table-striped-bg: #e9ecef;
-            --bs-table-hover-bg: #f1f3f5;
-        }
-
-        .table thead th {
-            background-color: #343a40;
-            color: #fff;
+        .table th {
             white-space: nowrap;
         }
 
-        .table tbody td {
-            vertical-align: middle;
-        }
-
-        .btn-primary {
-            --bs-btn-bg: #007bff;
-            --bs-btn-border-color: #007bff;
-            --bs-btn-hover-bg: #0056b3;
-            --bs-btn-hover-border-color: #0056b3;
-        }
-
         .badge {
-            font-size: 0.875rem;
+            font-size: 0.85rem;
+            padding: 0.5em 0.75em;
         }
 
-        /* Make table scroll responsive for small screens */
-        @media (max-width: 991.98px) {
-            .table-responsive {
-                display: block;
-                width: 100%;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            .table thead th,
-            .table tbody td {
-                white-space: nowrap;
-            }
+        .btn-edit {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
         }
 
-        /* Card-style table view for extra small screens */
         @media (max-width: 576px) {
             .table,
             .table thead,
             .table tbody,
-            .table tr,
             .table th,
-            .table td {
-                display: block !important;
+            .table td,
+            .table tr {
+                display: block;
             }
 
             .table thead {
-                display: none !important;
+                display: none;
             }
 
             .table tr {
                 margin-bottom: 1rem;
-                border-bottom: 2px solid #dee2e6;
+                border: 1px solid #dee2e6;
+                border-radius: 0.5rem;
+                overflow: hidden;
+                background: #f8f9fa;
             }
 
             .table td {
-                padding-right: 50%;
                 position: relative;
-                min-height: 36px;
+                padding-right: 50%;
+                padding: 0.75rem 1rem;
                 border: none;
-                border-bottom: 1px solid #e9ecef;
+                border-bottom: 1px solid #dee2e6;
                 text-align: right;
             }
 
             .table td:before {
                 position: absolute;
-                top: 50%;
+                top: 0.75rem;
                 right: 1rem;
                 width: 45%;
-                padding-left: 15px;
-                transform: translateY(-50%);
                 font-weight: bold;
-                color: #495057;
+                color: #6c757d;
                 white-space: nowrap;
                 text-align: right;
-                direction: rtl;
-            }
-
-            .table td:nth-of-type(1):before { content: '#'; }
-            .table td:nth-of-type(2):before { content: 'عنوان'; }
-            .table td:nth-of-type(3):before { content: 'توضیحات'; }
-            .table td:nth-of-type(4):before { content: 'وضعیت'; }
-            .table td:nth-of-type(5):before { content: 'کاربر'; }
-            .table td:nth-of-type(6):before { content: 'تاریخ ایجاد'; }
-            .table td:nth-of-type(7):before { content: 'عملیات'; }
-        }
-
-        /* Reduce container padding on extra small devices */
-        @media (max-width: 576px) {
-            .container {
-                padding: 0 2px !important;
+                content: attr(data-label);
             }
         }
     </style>
 
-    <div class="container mt-4">
-        <h2 class="mb-4">لیست تسک‌ها</h2>
+    <div class="todo-wrapper">
+        <h2 class="mb-4"><i class="bi bi-list-check me-1"></i> لیست تسک‌ها</h2>
 
         @if($todos->isEmpty())
-            <div class="alert alert-info">
-                هیچ تسکی برای نمایش وجود ندارد.
+            <div class="alert alert-info d-flex align-items-center" role="alert">
+                <i class="bi bi-info-circle me-2"></i> هیچ تسکی برای نمایش وجود ندارد.
             </div>
         @else
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover">
-                    <thead class="table-dark">
+                <table class="table align-middle table-bordered table-hover">
+                    <thead class="table-dark text-center">
                         <tr>
                             <th>#</th>
                             <th>عنوان</th>
@@ -144,33 +102,28 @@
                     <tbody>
                         @foreach($todos as $index => $todo)
                             <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $todo->title }}</td>
-                                <td>{{ $todo->description }}</td>
-                                <td>
+                                <td data-label="#"> {{ $index + 1 }} </td>
+                                <td data-label="عنوان"> {{ $todo->title }} </td>
+                                <td data-label="توضیحات"> {{ Str::limit($todo->description, 100) }} </td>
+                                <td data-label="وضعیت">
                                     @if($todo->is_done)
-                                        <span class="badge bg-success">انجام شده</span>
+                                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> انجام شده</span>
                                     @else
-                                        <span class="badge bg-warning text-dark">در حال انجام</span>
+                                        <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i> در حال انجام</span>
                                     @endif
                                 </td>
-                                <td>{{ $todo->user->name ?? '---' }}</td>
-                                <td>{{ jdate($todo->created_at)->format('Y/m/d H:i') }}</td>
-                                <td>
+                                <td data-label="کاربر"> {{ $todo->user->name ?? '---' }} </td>
+                                <td data-label="تاریخ ایجاد"> {{ jdate($todo->created_at)->format('Y/m/d H:i') }} </td>
+                                <td data-label="عملیات">
                                     @php
                                         $user = auth()->user();
-                                        $canEdit = false;
-                                        if ($user->hasRole('admin')) {
-                                            $canEdit = true;
-                                        } elseif ($user->hasRole('supervisor') && $user->subordinates->pluck('id')->contains($todo->user_id)) {
-                                            $canEdit = true;
-                                        } elseif ($todo->user_id === $user->id) {
-                                            $canEdit = true;
-                                        }
+                                        $canEdit = $user->hasRole('admin') ||
+                                                   ($user->hasRole('supervisor') && $user->subordinates->pluck('id')->contains($todo->user_id)) ||
+                                                   ($todo->user_id === $user->id);
                                     @endphp
 
                                     @if($canEdit)
-                                        <a href="{{ route('todos.edit', $todo->id) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('todos.edit', $todo->id) }}" class="btn btn-sm btn-outline-primary btn-edit">
                                             <i class="bi bi-pencil-square"></i> ویرایش
                                         </a>
                                     @endif

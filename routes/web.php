@@ -173,7 +173,7 @@ Route::get('/tracking/search', function () {
 Route::post('/tracking/search', [ProductTrackingController::class, 'search'])->name('product.tracking.search');
 //Todo
 
-Route::middleware(['auth', 'role:employee|admin|supervisor'])->group(function () {
+Route::middleware(['auth', 'role:employee|admin|supervisor|sales_manager|marketing_manager|marketing_user|sales_agent'])->group(function () {
     Route::get('/todos', [TodoController::class, 'index'])->name('todos.index');
     Route::get('/todos/create', [TodoController::class, 'create'])->name('todos.create');
     Route::post('/todos', [TodoController::class, 'store'])->name('todos.store');
