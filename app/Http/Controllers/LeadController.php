@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CheckLeadForCall;
 use App\Models\Lead;
 use Illuminate\Http\Request;
 
 class LeadController extends Controller
 {
     public function leadsStore(Request $request){
-        try {
+        {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',
@@ -18,20 +19,30 @@ class LeadController extends Controller
                 'note' => 'nullable|string',
                 'status' => 'required|in:در انتظار تماس,تماس گرفته شد,تبدیل به مشتری شد',
             ]);
-            $validated['user_id'] = auth()->id();
-    
-            Lead::create($validated);
-    
-            return redirect()
-                ->route('leads.create')
-                ->with('success', 'مشتری احتمالی با موفقیت ثبت شد.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->withInput() // برای حفظ اطلاعات فرم در صورت خطا
-                ->with('error', 'خطا در ثبت اطلاعات. لطفاً دوباره تلاش کنید.');
-        }
-       
+        
+            try {
+                $validated['user_id'] = auth()->id();
+        
+                // ایجاد سرنخ
+                $lead = Lead::create($validated);
+        
+                // اجرای Job برای بررسی تماس پس از ۳ روز
+                CheckLeadForCall::dispatch($lead)->delay(now()->addSeconds(10));
+                // // CheckLeadForCall::dispatch($lead);
+
+        
+                return redirect()
+                    ->route('leads.create')
+                    ->with('success', 'مشتری احتمالی با موفقیت ثبت شد.');
+            } catch (\Exception $e) {
+                \Log::error('خطا در ثبت سرنخ: ' . $e->getMessage());
+        
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with('error', 'خطا در ثبت اطلاعات. لطفاً دوباره تلاش کنید.');
+            }
+       }
    
 
     }

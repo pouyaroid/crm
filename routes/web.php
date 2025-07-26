@@ -173,7 +173,7 @@ Route::get('/tracking/search', function () {
 Route::post('/tracking/search', [ProductTrackingController::class, 'search'])->name('product.tracking.search');
 //Todo
 
-Route::middleware(['auth', 'role:employee|admin|supervisor|sales_manager|marketing_manager|marketing_user|sales_agent'])->group(function () {
+Route::middleware(['auth', 'role:employee|admin|supervisor|marketing_manager|marketing_user'])->group(function () {
     Route::get('/todos', [TodoController::class, 'index'])->name('todos.index');
     Route::get('/todos/create', [TodoController::class, 'create'])->name('todos.create');
     Route::post('/todos', [TodoController::class, 'store'])->name('todos.store');
@@ -184,6 +184,26 @@ Route::middleware(['auth', 'role:employee|admin|supervisor|sales_manager|marketi
     Route::put('/todos/{todo}', [TodoController::class, 'update'])->name('todos.update');
     Route::delete('/todos/{todo}', [TodoController::class, 'destroy'])->name('todos.destroy');
 });
+
+//notif
+Route::get('/notifications', function () {
+    $notifications = auth()->user()->notifications;
+    return view('notifications.index', compact('notifications'));
+})->name('notifications.index')->middleware('auth');
+
+Route::get('/notifications/mark/{id}', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark');
+
+
+Route::get('/notifications/mark/{id}', function ($id, Request $request) {
+    $notification = $request->user()->notifications()->where('id', $id)->first();
+    if ($notification) {
+        $notification->markAsRead();
+        // اینجا می‌تونی به مسیر قبلی یا صفحه موردنظر ریدایرکت کنی
+        return redirect()->back()->with('success', 'اعلان خوانده شد.');
+    }
+    return redirect()->back()->with('error', 'اعلان پیدا نشد.');
+})->name('notifications.mark');
+
 
 
 

@@ -288,6 +288,16 @@
                     <i class="bi bi-clipboard2-data"></i> گزارش سرنخ‌ها
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('todos.index') }}" class="nav-link {{ request()->routeIs('todos.index') ? 'active' : '' }}">
+                    <i class="bi bi-check2-square"></i> لیست وظایف
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('todos.create') }}" class="nav-link {{ request()->routeIs('todos.create') ? 'active' : '' }}">
+                    <i class="bi bi-folder-plus"></i> ایجاد وظایف
+                </a>
+            </li>
 
             <li class="nav-item mt-auto">
                 <form method="POST" action="{{ route('logout') }}">
@@ -308,7 +318,20 @@
         <button class="btn btn-toggle d-md-none" id="menuToggleBtn" aria-label="بازکردن منو">
             <i class="bi bi-list"></i> منو
         </button>
-
+    
+        {{-- نمایش نوتیفیکیشن‌های خوانده‌نشده --}}
+        @if(auth()->check() && auth()->user()->unreadNotifications->count())
+            <div class="alert alert-warning d-flex justify-content-between align-items-center" role="alert">
+                <div>
+                    <i class="bi bi-bell-fill me-2"></i>
+                    شما {{ auth()->user()->unreadNotifications->count() }} اعلان خوانده‌نشده دارید.
+                </div>
+                <div>
+                    <a href="{{ route('notifications.index') }}" class="btn btn-sm btn-outline-dark">مشاهده اعلان‌ها</a>
+                </div>
+            </div>
+        @endif
+    
         @yield('content')
     </main>
 </div>

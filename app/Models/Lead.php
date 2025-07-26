@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
-    public function calls()
+    public function leadCalls()
     {
         return $this->hasMany(LeadCall::class);
     }

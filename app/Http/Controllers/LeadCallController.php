@@ -8,9 +8,18 @@ use Illuminate\Http\Request;
 class LeadCallController extends Controller
 {
     public function create(Lead $lead)
-    {
-        return view('leadscall.create', compact('lead'));
+{
+    foreach (auth()->user()->unreadNotifications as $notification) {
+        if (
+            isset($notification->data['lead_id']) &&
+            $notification->data['lead_id'] == $lead->id
+        ) {
+            $notification->markAsRead();
+        }
     }
+
+    return view('leadscall.create', compact('lead'));
+}
 
     public function store(Request $request, Lead $lead)
     {

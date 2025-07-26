@@ -76,14 +76,16 @@
             </div>
 
             <div class="mb-4">
-                <label for="role" class="form-label">نقش:</label>
-                <select name="role" id="role" class="form-select @error('role') is-invalid @enderror" required>
-                    @foreach($roles as $role)
-                        <option value="{{ $role->name }}">{{ $role->name }}</option>
-                    @endforeach
-                </select>
-                @error('role')
-                <div class="invalid-feedback">{{ $message }}</div>
+                <label class="form-label">نقش‌ها:</label><br>
+                @foreach($roles as $role)
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->name }}"
+                            id="role_{{ $role->id }}">
+                        <label class="form-check-label" for="role_{{ $role->id }}">{{ $role->name }}</label>
+                    </div>
+                @endforeach
+                @error('roles')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
