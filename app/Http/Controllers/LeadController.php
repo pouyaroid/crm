@@ -27,7 +27,7 @@ class LeadController extends Controller
                 $lead = Lead::create($validated);
         
                 // اجرای Job برای بررسی تماس پس از ۳ روز
-                CheckLeadForCall::dispatch($lead)->delay(now()->addSeconds(10));
+                CheckLeadForCall::dispatch($lead)->delay(now()->addDays(3));
                 // // CheckLeadForCall::dispatch($lead);
 
         

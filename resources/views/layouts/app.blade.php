@@ -5,20 +5,25 @@
     <title>@yield('title', 'پنل مدیریت')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Bootstrap RTL + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn-font/dist/font-face.css" rel="stylesheet" />
 
     <style>
+        :root {
+            --sidebar-width-lg: 280px; /* Width of sidebar on large screens */
+            --sidebar-transition-duration: 0.3s;
+        }
+
         body {
             font-family: 'Vazirmatn', sans-serif;
             background: #f0f2f5;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll from layout itself */
         }
 
-        .container-wrapper {
+        /* Wrapper for sidebar and content */
+        .wrapper {
             display: flex;
             min-height: 100vh;
             background: #f8f9fa;
@@ -26,19 +31,34 @@
 
         /* Sidebar */
         .sidebar {
-            width: 280px;
+            width: var(--sidebar-width-lg);
             background: linear-gradient(135deg, #1f2937, #4b5563);
             color: #e0e7ff;
             padding-top: 1.5rem;
-            position: fixed;
+            position: fixed; /* Keep sidebar fixed */
             right: 0;
             top: 0;
             bottom: 0;
             box-shadow: -4px 0 15px rgba(0, 0, 0, 0.25);
-            z-index: 1050;
+            z-index: 1050; /* Ensure sidebar is above content and overlay */
             display: flex;
             flex-direction: column;
-            transition: right 0.3s ease;
+            transition: right var(--sidebar-transition-duration) ease;
+
+            /* Initially hide on small screens */
+            right: calc(-1 * var(--sidebar-width-lg)); /* Start off-screen to the right */
+        }
+
+        /* Show sidebar on large screens */
+        @media (min-width: 992px) {
+            .sidebar {
+                right: 0; /* Always visible on large screens */
+            }
+        }
+
+        /* Show sidebar when toggled (mobile) */
+        .sidebar.show {
+            right: 0;
         }
 
         .sidebar-header {
@@ -56,9 +76,9 @@
             align-items: center;
         }
 
-        /* دکمه بستن منو در موبایل */
+        /* Close button for mobile menu */
         .btn-close-menu {
-            display: none;
+            display: none; /* Hidden by default */
             background: transparent;
             border: none;
             color: #fbbf24;
@@ -68,6 +88,12 @@
         }
         .btn-close-menu:hover {
             color: #f59e0b;
+        }
+        /* Show close button on small screens */
+        @media (max-width: 991.98px) {
+            .btn-close-menu {
+                display: inline-block;
+            }
         }
 
         .user-info {
@@ -149,48 +175,39 @@
             color: #b91c1c;
         }
 
-        /* Content Wrapper */
+        /* Main content wrapper */
         .content-wrapper {
             flex-grow: 1;
-            margin-right: 280px;
             padding: 2rem 2.5rem;
             min-height: 100vh;
             background: #f8fafc;
-            transition: margin-right 0.3s ease;
+            transition: margin-right var(--sidebar-transition-duration) ease;
+            margin-right: 0; /* Default for small screens */
         }
 
-        /* Responsive */
-        @media (max-width: 991.98px) {
-            .sidebar {
-                right: -280px;
-            }
-            .sidebar.show {
-                right: 0;
-            }
+        /* Adjust content margin on large screens when sidebar is visible */
+        @media (min-width: 992px) {
             .content-wrapper {
-                margin-right: 0;
-                padding: 1rem 1.5rem;
-            }
-            .overlay {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.45);
-                z-index: 1040;
-                transition: opacity 0.3s ease;
-            }
-            .overlay.show {
-                display: block;
-                opacity: 1;
-            }
-
-            /* نمایش دکمه بستن منو */
-            .btn-close-menu {
-                display: inline-block;
+                margin-right: var(--sidebar-width-lg); /* Push content to the left of sidebar */
             }
         }
 
-        /* Menu Toggle Button */
+        /* Overlay for small screens when sidebar is open */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1040; /* Below sidebar, above content */
+            transition: opacity var(--sidebar-transition-duration) ease;
+            opacity: 0;
+        }
+        .overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Menu Toggle Button (for mobile) */
         .btn-toggle {
             background-color: #374151;
             color: #fbbf24;
@@ -211,17 +228,16 @@
             font-size: 1.5rem;
         }
     </style>
+    @stack('styles') {{-- This line is crucial for page-specific styles --}}
 </head>
 <body>
 
-<div class="container-wrapper">
-    <!-- Sidebar -->
+<div class="wrapper">
     <nav class="sidebar" id="sidebar" aria-label="منوی اصلی">
         <div class="sidebar-header" tabindex="0">
             <div>
                 <i class="bi bi-speedometer2"></i> CRM رشد
             </div>
-            <!-- دکمه بستن منو فقط در موبایل -->
             <button class="btn-close-menu" id="closeMenuBtn" aria-label="بستن منو">
                 <i class="bi bi-x-lg"></i>
             </button>
@@ -310,15 +326,13 @@
         </ul>
     </nav>
 
-    <!-- Overlay for small screens -->
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div> {{-- Changed onclick to closeSidebar --}}
 
-    <!-- Main content -->
     <main class="content-wrapper">
-        <button class="btn btn-toggle d-md-none" id="menuToggleBtn" aria-label="بازکردن منو">
+        <button class="btn btn-toggle d-lg-none" id="menuToggleBtn" aria-label="بازکردن منو"> {{-- Changed d-md-none to d-lg-none --}}
             <i class="bi bi-list"></i> منو
         </button>
-    
+        
         {{-- نمایش نوتیفیکیشن‌های خوانده‌نشده --}}
         @if(auth()->check() && auth()->user()->unreadNotifications->count())
             <div class="alert alert-warning d-flex justify-content-between align-items-center" role="alert">
@@ -331,7 +345,7 @@
                 </div>
             </div>
         @endif
-    
+        
         @yield('content')
     </main>
 </div>
@@ -357,9 +371,11 @@
     overlay.addEventListener('click', closeSidebar);
     closeMenuBtn.addEventListener('click', closeSidebar);
 
+    // Close sidebar if window is resized to large screen
     window.addEventListener('resize', () => {
+        // Use a breakpoint consistent with your CSS (992px for lg)
         if (window.innerWidth >= 992) {
-            closeSidebar();
+            closeSidebar(); // Ensure sidebar is hidden if it was open on mobile and user resizes
         }
     });
 </script>
