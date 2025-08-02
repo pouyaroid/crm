@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -141,6 +142,7 @@
     </style>
 </head>
 <body>
+    <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="form-container text-end">
         <h3 class="mb-4 text-center">افزودن تسک جدید</h3>
 
@@ -205,7 +207,7 @@
             </div>
         </form>
     </div>
-
+</div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://unpkg.com/persian-datepicker/dist/js/persian-datepicker.min.js"></script>
