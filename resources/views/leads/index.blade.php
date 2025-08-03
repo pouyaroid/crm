@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'لیست مشتریان احتمالی')
@@ -12,8 +11,18 @@
                 {{ session('error') }}
             </div>
         @endif
+        @if (session('success'))
+            <div class='alert alert-success'>
+                {{ session('success') }}
+            </div>
+        @endif
 
-        <a href='{{ route('leads.create') }}' class='btn btn-success mb-3 w-100 d-md-inline-block d-block'>+ افزودن مشتری احتمالی</a>
+        {{-- کدهای جدید برای Export و Import --}}
+        <div class="mb-3 d-flex flex-column flex-md-row gap-2">
+            <a href='{{ route('leads.create') }}' class='btn btn-success w-100 d-md-inline-block d-block'>+ افزودن مشتری احتمالی</a>
+            <a href='{{ route('leads.export') }}' class='btn btn-info w-100 d-md-inline-block d-block'>خروجی CSV</a>
+            <a href='{{ route('leads.import.form') }}' class='btn btn-secondary w-100 d-md-inline-block d-block'>ایمپورت فایل</a>
+        </div>
 
         <form action='{{ route('leads.index') }}' method='GET' class='row g-2 mb-3'>
             <div class='col-md-2 col-12'>
@@ -89,7 +98,6 @@
             </table>
         </div>
 
-        <!-- Small screens cards view -->
         <div class="d-lg-none">
             @foreach($leads as $lead)
             <div class="card mb-2 shadow-sm">

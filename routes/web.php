@@ -115,6 +115,9 @@ Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales'])->group
     Route::get('/customers/{customer}/edit', [CustomerInfoController::class, 'edit'])->name('customers.edit');
 Route::put('/customers/{customer}', [CustomerInfoController::class, 'update'])->name('customers.update');
 Route::delete('/customers/{customer}', [CustomerInfoController::class, 'destroy'])->name('customers.destroy');
+Route::get('/customers/export', [CustomerInfoController::class, 'exportCsv'])->name('customers.export');
+Route::get('/customers/import', [CustomerInfoController::class, 'importForm'])->name('customers.import.form');
+Route::post('/customers/import', [CustomerInfoController::class, 'import'])->name('customers.import');
 //رهگییری محصول
 Route::get('/tracking/create', [ProductTrackingController::class, 'createTracking'])->name('tracking.create.form');
 Route::post('/tracking/store', [ProductTrackingController::class, 'trackingStore'])->name('tracking.store');
@@ -148,23 +151,31 @@ Route::post('/customers/message/send', [CustomerInfoController::class, 'sendBulk
 
 });
 //ّForMarketing
-Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_user'])->group(function(){
-    Route::get('/marketing/leadscreate',[LeadController::class,'create'])->name('leads.create');
-    Route::post('/marketing/leads',[LeadController::class,'leadsStore'])->name('leads.store');
-    Route::get('/marketing/leads/index',[LeadController::class,'index'])->name('leads.index');
+Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_user'])->prefix('marketing')->group(function(){
+    Route::get('/leadscreate', [LeadController::class, 'create'])->name('leads.create');
+    Route::post('/leads', [LeadController::class, 'leadsStore'])->name('leads.store');
+    Route::get('/leads/index', [LeadController::class, 'index'])->name('leads.index');
+    
+    // مسیرهای Export و Import که به درستی تعریف شده‌اند
+    Route::get('/leads/export', [LeadController::class, 'exportCsv'])->name('leads.export');
+    Route::get('/leads/import', [LeadController::class, 'importForm'])->name('leads.import.form');
+    Route::post('/leads/import', [LeadController::class, 'import'])->name('leads.import');
+    
+    // سایر مسیرهای شما
     Route::get('leads/{lead}/calls/create', [LeadCallController::class, 'create'])->name('leads.calls.create');
     Route::post('leads/{lead}/calls', [LeadCallController::class, 'store'])->name('leads.calls.store');
-    Route::get('marketing/leads/{lead}', [LeadCallController::class, 'show'])->name('leads.show');
-    Route::get('marketing/leads/{lead}/edit', [LeadController::class, 'edit'])->name('leads.edit');
-    Route::put('marketing/leads/{lead}', [LeadController::class, 'update'])->name('leads.update');
+    Route::get('leads/{lead}', [LeadCallController::class, 'show'])->name('leads.show');
+    Route::get('leads/{lead}/edit', [LeadController::class, 'edit'])->name('leads.edit');
+    Route::put('leads/{lead}', [LeadController::class, 'update'])->name('leads.update');
     Route::post('/leads/{id}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
     Route::get('/leads/report', [LeadReportController::class, 'index'])->name('leads.report');
+});
    
 
 
 
 
-});
+
 
 Route::get('/tracking/search', function () {
     return view('ProductTracking.search');

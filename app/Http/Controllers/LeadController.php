@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\CheckLeadForCall;
 use App\Models\Lead;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LeadController extends Controller
 {
@@ -102,5 +103,92 @@ public function update(Request $request, Lead $lead)
 
     return redirect()->route('leads.index')->with('success', 'اطلاعات مشتری احتمالی با موفقیت ویرایش شد.');
 }
+public function exportCsv()
+{
+    $leads = Lead::all(); // دریافت تمامی Lead ها
 
+    $fileName = 'leads_' . date('Y_m_d_H_i_s') . '.csv';
+
+    $headers = [
+        "Content-type"        => "text/csv; charset=UTF-8",
+        "Content-Disposition" => "attachment; filename=$fileName",
+        "Pragma"              => "no-cache",
+        "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+        "Expires"             => "0"
+    ];
+
+    $columns = ['نام', 'تلفن', 'شرکت', 'منبع', 'سطح علاقه', 'یادداشت', 'وضعیت', 'کاربر'];
+
+    $callback = function() use ($leads, $columns) {
+        $file = fopen('php://output', 'w');
+
+        // اضافه کردن BOM برای پشتیبانی از UTF-8 در نرم‌افزارهایی مانند اکسل
+        fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+        fputcsv($file, $columns); // اضافه کردن هدرها
+
+        foreach ($leads as $lead) {
+            $row = [
+                $lead->name,
+                $lead->phone,
+                $lead->company,
+                $lead->source,
+                $lead->interest_level,
+                $lead->note,
+                $lead->status,
+                $lead->user->name ?? 'ناشناس'
+            ];
+
+            fputcsv($file, $row);
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+public function importForm()
+{
+    return view('leads.import');
+}
+
+public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:csv,txt|max:2048'
+    ]);
+
+    $path = $request->file('file')->getRealPath();
+    $data = array_map('str_getcsv', file($path));
+
+    $header = array_shift($data);
+
+    $records = 0;
+    foreach ($data as $row) {
+        if (count($header) != count($row)) {
+            Log::error('تعداد ستون‌های نامعتبر در ردیف: ' . implode(',', $row));
+            continue;
+        }
+
+        try {
+            $record = array_combine($header, $row);
+
+            Lead::create([
+                'name' => $record['نام'],
+                'phone' => $record['تلفن'],
+                'company' => $record['شرکت'] ?? null,
+                'source' => $record['منبع'] ?? null,
+                'interest_level' => $record['سطح علاقه'],
+                'note' => $record['یادداشت'] ?? null,
+                'status' => $record['وضعیت'],
+                'user_id' => auth()->id()
+            ]);
+            $records++;
+        } catch (\Exception $e) {
+            Log::error('خطا در ایمپورت ردیف: ' . $e->getMessage() . ' - داده: ' . implode(',', $row));
+        }
+    }
+
+    return redirect()->route('leads.index')->with('success', $records . ' رکورد با موفقیت ایمپورت شد.');
+}
 }

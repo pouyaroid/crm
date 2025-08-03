@@ -19,6 +19,12 @@
         </div>
     </div>
 
+    {{-- دکمه‌های جدید برای Export و Import --}}
+    <div class="mb-3 d-flex flex-column flex-md-row gap-2">
+        <a href="{{ route('customers.export') }}" class="btn btn-info w-100 d-md-inline-block d-block">خروجی CSV</a>
+        <a href="{{ route('customers.import.form') }}" class="btn btn-secondary w-100 d-md-inline-block d-block">ایمپورت فایل</a>
+    </div>
+
     {{-- فرم جستجو --}}
     <form method="GET" id="search-form" class="card shadow-sm mb-4 border-0">
         <div class="card-body">

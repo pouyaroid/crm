@@ -190,6 +190,108 @@ public function showCustomerSelection()
 
     return redirect()->route('customers.index')->with('success', 'پیام ایمیل ارسال شد.');
 }
+public function exportCsv()
+{
+    $customers = CustomerInfo::all();
+
+    $fileName = 'customers_' . date('Y_m_d_H_i_s') . '.csv';
+
+    $headers = [
+        "Content-type"        => "text/csv; charset=UTF-8",
+        "Content-Disposition" => "attachment; filename=$fileName",
+        "Pragma"              => "no-cache",
+        "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+        "Expires"             => "0"
+    ];
+
+    $columns = [
+        'نام شرکت', 'نوع شرکت', 'نام مسئول', 'ایمیل', 'آدرس', 'مدیر عامل',
+        'بانک', 'یادداشت', 'شماره حساب', 'تلفن شرکت', 'تلفن همراه',
+        'کد ملی', 'کد پستی', 'کد اقتصادی'
+    ];
+
+    $callback = function() use ($customers, $columns) {
+        $file = fopen('php://output', 'w');
+        fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // اضافه کردن BOM برای UTF-8
+
+        fputcsv($file, $columns);
+
+        foreach ($customers as $customer) {
+            $row = [
+                $customer->company_name,
+                $customer->company_type,
+                $customer->personal_name,
+                $customer->email,
+                $customer->address,
+                $customer->ceo,
+                $customer->bank,
+                $customer->note,
+                $customer->account_number,
+                $customer->company_phone,
+                $customer->mobile_phone,
+                $customer->id_meli,
+                $customer->postal_code,
+                $customer->code_eghtesadi,
+            ];
+            fputcsv($file, $row);
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+
+public function importForm()
+{
+    return view('Custumer.import');
+}
+
+public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:csv,txt|max:2048'
+    ]);
+
+    $path = $request->file('file')->getRealPath();
+    $data = array_map('str_getcsv', file($path));
+    $header = array_shift($data);
+
+    $records = 0;
+    foreach ($data as $row) {
+        if (count($header) != count($row)) {
+            Log::error('تعداد ستون‌های نامعتبر در ردیف: ' . implode(',', $row));
+            continue;
+        }
+
+        try {
+            $record = array_combine($header, $row);
+
+            CustomerInfo::create([
+                'company_name' => $record['نام شرکت'],
+                'company_type' => $record['نوع شرکت'] ?? null,
+                'personal_name' => $record['نام مسئول'],
+                'email' => $record['ایمیل'],
+                'address' => $record['آدرس'],
+                'ceo' => $record['مدیر عامل'],
+                'bank' => $record['بانک'],
+                'note' => $record['یادداشت'] ?? null,
+                'account_number' => $record['شماره حساب'],
+                'company_phone' => $record['تلفن شرکت'],
+                'mobile_phone' => $record['تلفن همراه'],
+                'id_meli' => $record['کد ملی'],
+                'postal_code' => $record['کد پستی'],
+                'code_eghtesadi' => $record['کد اقتصادی'],
+                'user_id' => auth()->id()
+            ]);
+            $records++;
+        } catch (\Exception $e) {
+            Log::error('خطا در ایمپورت ردیف: ' . $e->getMessage() . ' - داده: ' . implode(',', $row));
+        }
+    }
+
+    return redirect()->route('customers.index')->with('success', $records . ' رکورد با موفقیت ایمپورت شد.');
+}
     
 }
 
