@@ -30,6 +30,8 @@ use App\Http\Controllers\ProductTrackingController;
 use App\Http\Controllers\PublicFormController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\TodoController;
+use App\Http\Controllers\EventController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -234,4 +236,32 @@ Route::get('/test-email', function () {
     });
 
     return 'ایمیل ارسال شد (در صورت تنظیم درست).';
+});
+Route::middleware(['auth'])->group(function () {
+    
+    // مسیرهای مربوط به رویدادها
+
+    // نمایش لیست تمام رویدادها
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+
+    // نمایش فرم ایجاد رویداد جدید
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+
+    // ذخیره رویداد جدید در دیتابیس
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+
+    // نمایش فرم ویرایش یک رویداد خاص
+    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+
+    // به‌روزرسانی اطلاعات یک رویداد خاص در دیتابیس
+    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+
+    // حذف یک رویداد خاص
+    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+     // مسیر اصلی برای نمایش لیست یا تقویم
+     Route::get('/events', [EventController::class, 'index'])->name('events.index');
+     // مسیر API برای دریافت رویدادها
+     Route::get('/events/api', [EventController::class, 'apiEvents'])->name('events.api');
+     Route::get('/events/calendar', [EventController::class, 'showCalendar'])->name('events.calendar');
+
 });

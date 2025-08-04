@@ -79,4 +79,9 @@ public function supervisors()
 public function subordinates()
 {
     return $this->belongsToMany(User::class, 'user_supervisors', 'supervisor_id', 'user_id');
-}}
+}
+public function events()
+{
+    return $this->hasMany(Event::class);
+}
+}
