@@ -36,4 +36,8 @@ class CustomerInfo extends Model
     {
         return $this->hasMany(CustomerCase::class, 'customer_id'); // 'customer_id' نام ستون کلید خارجی در جدول customer_cases
     }
+    public function calls()
+{
+    return $this->hasMany(CustomerCall::class);
+}
 }

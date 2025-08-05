@@ -120,6 +120,10 @@ Route::delete('/customers/{customer}', [CustomerInfoController::class, 'destroy'
 Route::get('/customers/export', [CustomerInfoController::class, 'exportCsv'])->name('customers.export');
 Route::get('/customers/import', [CustomerInfoController::class, 'importForm'])->name('customers.import.form');
 Route::post('/customers/import', [CustomerInfoController::class, 'import'])->name('customers.import');
+//for customer calls
+Route::get('/customers/{customer}/calls', [\App\Http\Controllers\CustomerCallController::class, 'index'])->name('customer.calls.index');
+Route::get('/customers/{customer}/calls/create', [\App\Http\Controllers\CustomerCallController::class, 'create'])->name('customer.calls.create');
+Route::post('/customers/{customer}/calls', [\App\Http\Controllers\CustomerCallController::class, 'store'])->name('customer.calls.store');
 //رهگییری محصول
 Route::get('/tracking/create', [ProductTrackingController::class, 'createTracking'])->name('tracking.create.form');
 Route::post('/tracking/store', [ProductTrackingController::class, 'trackingStore'])->name('tracking.store');

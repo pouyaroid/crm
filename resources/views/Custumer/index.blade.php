@@ -99,6 +99,9 @@
                                             <a href="{{ route('customers.message.single', $customer->id) }}" class="btn btn-info btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-envelope me-1"></i>پیام</a>
                                             <a href="{{ route('cases.create', $customer->id) }}" class="btn btn-secondary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-folder-plus me-1"></i>پرونده جدید</a>
                                             <a href="{{ route('customers.cases.index', $customer->id) }}" class="btn btn-dark btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-folder2-open me-1"></i>پرونده‌ها</a>
+                                            <a href="{{ route('customer.calls.create', $customer->id) }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-telephone-plus me-1"></i>ثبت تماس</a>
+                                            <a href="{{ route('customer.calls.index', $customer->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-clock-history me-1"></i>سابقه تماس</a>
+
                                             <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟')">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-trash me-1"></i>حذف</button>
@@ -143,6 +146,9 @@
                                     <a href="{{ route('customers.message.single', $customer->id) }}" class="btn btn-info btn-sm rounded-pill w-100"><i class="bi bi-envelope me-1"></i>پیام</a>
                                     <a href="{{ route('cases.create', $customer->id) }}" class="btn btn-secondary btn-sm rounded-pill w-100"><i class="bi bi-folder-plus me-1"></i>پرونده جدید</a>
                                     <a href="{{ route('customers.cases.index', $customer->id) }}" class="btn btn-dark btn-sm rounded-pill w-100"><i class="bi bi-folder2-open me-1"></i>پرونده‌ها</a>
+                                    <a href="{{ route('customer.calls.create', $customer->id) }}" class="btn btn-primary btn-sm rounded-pill w-100"><i class="bi bi-telephone-plus me-1"></i>ثبت تماس</a>
+                                    <a href="{{ route('customer.calls.index', $customer->id) }}" class="btn btn-outline-primary btn-sm rounded-pill w-100"><i class="bi bi-clock-history me-1"></i>سابقه تماس</a>
+
                                     <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" onsubmit="return confirm('آیا مطمئن هستید؟')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm rounded-pill w-100"><i class="bi bi-trash me-1"></i>حذف</button>
