@@ -164,13 +164,14 @@ Route::middleware(['auth','role:admin|sales_manager|marketing_manager|marketing_
     Route::post('/leads/import', [LeadController::class, 'import'])->name('leads.import');
     
     // سایر مسیرهای شما
+    Route::get('/leads/report', [LeadReportController::class, 'index'])->name('leads.report');
     Route::get('leads/{lead}/calls/create', [LeadCallController::class, 'create'])->name('leads.calls.create');
     Route::post('leads/{lead}/calls', [LeadCallController::class, 'store'])->name('leads.calls.store');
     Route::get('leads/{lead}', [LeadCallController::class, 'show'])->name('leads.show');
     Route::get('leads/{lead}/edit', [LeadController::class, 'edit'])->name('leads.edit');
     Route::put('leads/{lead}', [LeadController::class, 'update'])->name('leads.update');
     Route::post('/leads/{id}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
-    Route::get('/leads/report', [LeadReportController::class, 'index'])->name('leads.report');
+
 });
    
 
