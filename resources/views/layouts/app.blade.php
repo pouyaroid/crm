@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn-font/dist/font-face.css" rel="stylesheet" />
     
-
     <style>
         :root {
             --sidebar-width-lg: 280px; /* Width of sidebar on large screens */
@@ -45,7 +44,7 @@
             display: flex;
             flex-direction: column;
             transition: right var(--sidebar-transition-duration) ease;
-
+            
             /* Initially hide on small screens */
             right: calc(-1 * var(--sidebar-width-lg)); /* Start off-screen to the right */
         }
@@ -60,6 +59,12 @@
         /* Show sidebar when toggled (mobile) */
         .sidebar.show {
             right: 0;
+        }
+        
+        /* New CSS for scrollable content inside sidebar */
+        .sidebar-scrollable {
+            flex-grow: 1; /* Allow content to grow and fill available space */
+            overflow-y: auto; /* Enable vertical scrolling */
         }
 
         .sidebar-header {
@@ -157,6 +162,13 @@
         .sidebar .nav-link:not(:last-child) {
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
+        .sidebar-menu {
+            /* Remove the border from the last nav item since we're adding it to the ul instead */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
 
         /* Logout Button */
         .sidebar form button.nav-link {
@@ -248,83 +260,96 @@
             <i class="bi bi-person-circle"></i>
             {{ auth()->user()->name ?? 'کاربر ناشناس' }}
         </div>
-
-        <ul class="nav flex-column mt-3">
-            <li class="nav-item">
-                <a href="{{ route('complaints.admin.index') }}" class="nav-link {{ request()->routeIs('complaints.admin.index') ? 'active' : '' }}">
-                    <i class="bi bi-inbox-fill"></i> لیست شکایات
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.reports') }}" class="nav-link {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
-                    <i class="bi bi-graph-up-arrow"></i> گزارش شکایات
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('users.create') }}" class="nav-link {{ request()->routeIs('users.create') ? 'active' : '' }}">
-                    <i class="bi bi-person-plus"></i> ساخت کاربر
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}">
-                    <i class="bi bi-people"></i> کاربران
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('customers.create') }}" class="nav-link {{ request()->routeIs('customers.create') ? 'active' : '' }}">
-                    <i class="bi bi-person-plus-fill"></i> ثبت مشتری
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.index') ? 'active' : '' }}">
-                    <i class="bi bi-people-fill"></i> لیست مشتریان
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('tracking.create.form') }}" class="nav-link {{ request()->routeIs('tracking.create.form') ? 'active' : '' }}">
-                    <i class="bi bi-plus-square"></i> ثبت رهگیری
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('tracking.index') }}" class="nav-link {{ request()->routeIs('tracking.index') ? 'active' : '' }}">
-                    <i class="bi bi-box-arrow-in-up-right"></i> مشاهده رهگیری
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('leads.create') }}" class="nav-link {{ request()->routeIs('leads.create') ? 'active' : '' }}">
-                    <i class="bi bi-lightbulb-fill"></i> سرنخ جدید
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('leads.index') }}" class="nav-link {{ request()->routeIs('leads.index') ? 'active' : '' }}">
-                    <i class="bi bi-search-heart"></i> مشاهده سرنخ‌ها
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('leads.report') }}" class="nav-link {{ request()->routeIs('leads.report') ? 'active' : '' }}">
-                    <i class="bi bi-clipboard2-data"></i> گزارش سرنخ‌ها
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('todos.index') }}" class="nav-link {{ request()->routeIs('todos.index') ? 'active' : '' }}">
-                    <i class="bi bi-check2-square"></i> لیست وظایف
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('todos.create') }}" class="nav-link {{ request()->routeIs('todos.create') ? 'active' : '' }}">
-                    <i class="bi bi-folder-plus"></i> ایجاد وظایف
-                </a>
-            </li>
-
-            <li class="nav-item mt-auto">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="nav-link btn btn-link text-start text-danger w-100">
-                        <i class="bi bi-box-arrow-left"></i> خروج
-                    </button>
-                </form>
-            </li>
-        </ul>
+        
+        <div class="sidebar-scrollable">
+            <ul class="nav flex-column mt-3">
+                <li class="nav-item">
+                    <a href="{{ route('complaints.admin.index') }}" class="nav-link {{ request()->routeIs('complaints.admin.index') ? 'active' : '' }}">
+                        <i class="bi bi-inbox-fill"></i> لیست شکایات
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.reports') }}" class="nav-link {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
+                        <i class="bi bi-graph-up-arrow"></i> گزارش شکایات
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('users.create') }}" class="nav-link {{ request()->routeIs('users.create') ? 'active' : '' }}">
+                        <i class="bi bi-person-plus"></i> ساخت کاربر
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}">
+                        <i class="bi bi-people"></i> کاربران
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('customers.create') }}" class="nav-link {{ request()->routeIs('customers.create') ? 'active' : '' }}">
+                        <i class="bi bi-person-plus-fill"></i> ثبت مشتری
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.index') ? 'active' : '' }}">
+                        <i class="bi bi-people-fill"></i> لیست مشتریان
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('tracking.create.form') }}" class="nav-link {{ request()->routeIs('tracking.create.form') ? 'active' : '' }}">
+                        <i class="bi bi-plus-square"></i> ثبت رهگیری
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('tracking.index') }}" class="nav-link {{ request()->routeIs('tracking.index') ? 'active' : '' }}">
+                        <i class="bi bi-box-arrow-in-up-right"></i> مشاهده رهگیری
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('leads.create') }}" class="nav-link {{ request()->routeIs('leads.create') ? 'active' : '' }}">
+                        <i class="bi bi-lightbulb-fill"></i> سرنخ جدید
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('leads.index') }}" class="nav-link {{ request()->routeIs('leads.index') ? 'active' : '' }}">
+                        <i class="bi bi-search-heart"></i> مشاهده سرنخ‌ها
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('leads.report') }}" class="nav-link {{ request()->routeIs('leads.report') ? 'active' : '' }}">
+                        <i class="bi bi-clipboard2-data"></i> گزارش سرنخ‌ها
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('todos.index') }}" class="nav-link {{ request()->routeIs('todos.index') ? 'active' : '' }}">
+                        <i class="bi bi-check2-square"></i> لیست وظایف
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('todos.create') }}" class="nav-link {{ request()->routeIs('todos.create') ? 'active' : '' }}">
+                        <i class="bi bi-folder-plus"></i> ایجاد وظایف
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('events.index') }}" class="nav-link {{ request()->routeIs('events.index') ? 'active' : '' }}">
+                        <i class="bi bi-calendar3"></i> مشاهده رویداد
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('events.create') }}" class="nav-link {{ request()->routeIs('events.create') ? 'active' : '' }}">
+                        <i class="bi bi-calendar2-plus"></i> ایجاد رویداد
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav flex-column mt-auto p-0">
+                <li class="nav-item">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="nav-link btn btn-link text-start text-danger w-100">
+                            <i class="bi bi-box-arrow-left"></i> خروج
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
     </nav>
 
     <div class="overlay" id="overlay" onclick="closeSidebar()"></div> {{-- Changed onclick to closeSidebar --}}
