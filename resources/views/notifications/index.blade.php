@@ -11,10 +11,16 @@
         @forelse ($notifications as $notification)
             <li class="list-group-item d-flex justify-content-between align-items-center notification-item">
                 <div>
-                    @if(isset($notification->data['message']))
-                        {{ $notification->data['message'] }}
+                    @php
+                        $type = class_basename($notification->type);
+                    @endphp
+
+                    @if ($type === 'ReminderNotification')
+                        🕒 <strong>یادآور:</strong>
+                        {{ $notification->data['message'] ?? 'یادآور جدید دارید.' }}
                     @else
-                        اعلان جدید
+                        🔔 <strong>اعلان:</strong>
+                        {{ $notification->data['message'] ?? 'اعلان جدید' }}
                     @endif
 
                     <small class="text-muted d-block mt-1">{{ $notification->created_at->diffForHumans() }}</small>

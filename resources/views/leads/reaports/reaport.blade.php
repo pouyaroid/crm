@@ -167,7 +167,7 @@
             altField: '#from_date_gregorian',
             altFormat: 'YYYY-MM-DD',
             observer: true,
-            calendar: { persian: { locale: 'fa' } },
+            calendar: { persian: { locale: 'fa',leapYearMode: 'astronomical' } },
             initialValue: true
         });
 
@@ -177,7 +177,7 @@
             altField: '#to_date_gregorian',
             altFormat: 'YYYY-MM-DD',
             observer: true,
-            calendar: { persian: { locale: 'fa' } },
+            calendar: { persian: { locale: 'fa',leapYearMode: 'astronomical' } },
             initialValue: true
         });
 

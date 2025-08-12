@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\CheckLeadForCall;
 use App\Models\Lead;
+use App\Notifications\NoCallReminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -11,6 +12,7 @@ class LeadController extends Controller
 {
     public function leadsStore(Request $request){
         {
+           
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',
@@ -28,8 +30,11 @@ class LeadController extends Controller
                 $lead = Lead::create($validated);
         
                 // اجرای Job برای بررسی تماس پس از ۳ روز
-                CheckLeadForCall::dispatch($lead)->delay(now()->addDays(3));
+                // CheckLeadForCall::dispatch($lead)->delay(now()->addDays(1));
                 // // CheckLeadForCall::dispatch($lead);
+                // auth()->user()->notify(new NoCallReminder($lead));
+                // CheckLeadForCall::dispatch($lead)->delay(now()->addMinutes(2));
+                CheckLeadForCall::dispatch($lead)->delay(now()->addMinutes(20));
 
         
                 return redirect()

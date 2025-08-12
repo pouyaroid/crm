@@ -112,17 +112,21 @@
 
 <script>
   $(document).ready(function () {
-    $('#event_date_jalali').persianDatepicker({
-      format: 'YYYY/MM/DD',
-      calendarType: 'persian',
-      autoClose: true,
-      observer: true
+    $("#event_date_jalali").persianDatepicker({
+                calendar: {
+                    persian: {
+                        locale: 'fa',
+                        leapYearMode: 'astronomical'
+                    }
+                },
+            
     });
     $('#end_date_jalali').persianDatepicker({
       format: 'YYYY/MM/DD',
       calendarType: 'persian',
       autoClose: true,
-      observer: true
+      observer: true,
+      leapYearMode: 'astronomical' // تغییر به الگوریتم نجومی
     });
   });
 </script>

@@ -22,4 +22,12 @@ public function user()
 {
     return $this->belongsTo(User::class);
 }
+public function reminders()
+{
+    return $this->morphMany(Reminder::class, 'remindable');
+}
+public function customerInfo()
+{
+    return $this->belongsTo(CustomerInfo::class, 'customer_info_id');
+}
 }

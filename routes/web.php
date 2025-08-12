@@ -31,6 +31,10 @@ use App\Http\Controllers\PublicFormController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\EventController;
+use Carbon\Carbon;
+use Morilog\Jalali\Jalalian;
+use App\Jobs\SendSingleReminderNotification;
+use Illuminate\Support\Facades\Log;
 
 
 Route::get('/', function () {
@@ -269,4 +273,36 @@ Route::middleware(['auth'])->group(function () {
      Route::get('/events/api', [EventController::class, 'apiEvents'])->name('events.api');
      Route::get('/events/calendar', [EventController::class, 'showCalendar'])->name('events.calendar');
 
+});
+//testReminder
+Route::get('/test-reminder', function (\Illuminate\Http\Request $request) {
+    $jalaliDate = $request->query('date', '1404/05/20 10:00'); // تاریخ جلالی پیش‌فرض
+
+    // تبدیل تاریخ جلالی به میلادی
+    try {
+        $remindAt = Jalalian::fromFormat('Y/m/d H:i', $jalaliDate)->toCarbon()->subDay();
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'فرمت تاریخ جلالی نامعتبر است.', 'message' => $e->getMessage()], 400);
+    }
+
+    $now = now();
+    $daysDiff = $now->diffInDays($remindAt, false);
+    $delaySeconds = $now->diffInSeconds($remindAt, false);
+
+    if ($daysDiff > 0) {
+        $status = 'تاریخ آینده است، نوتیف با تاخیر ارسال می‌شود.';
+    } elseif ($daysDiff === 0) {
+        $status = 'تاریخ امروز است، نوتیف ۱۲ ساعت بعد ارسال می‌شود.';
+        $delaySeconds = 12 * 60 * 60; // 12 ساعت به ثانیه
+    } else {
+        $status = 'تاریخ گذشته است، نوتیف ارسال نمی‌شود.';
+    }
+
+    return response()->json([
+        'status' => $status,
+        'now' => $now->toDateTimeString(),
+        'remind_at' => $remindAt->toDateTimeString(),
+        'days_diff' => $daysDiff,
+        'delay_seconds' => $delaySeconds,
+    ]);
 });
