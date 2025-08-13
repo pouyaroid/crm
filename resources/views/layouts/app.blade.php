@@ -10,92 +10,116 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn-font/dist/font-face.css" rel="stylesheet" />
     
     <style>
+        /*
+        ===================================================
+        فونت و متغیرهای اصلی
+        ===================================================
+        */
         :root {
-            --sidebar-width-lg: 280px; /* Width of sidebar on large screens */
+            --sidebar-width-lg: 280px;
             --sidebar-transition-duration: 0.3s;
+            --primary-color: #1a2a4b; /* آبی تیره برای پس‌زمینه سایدبار */
+            --secondary-color: #273b64; /* رنگ روشن‌تر برای پس‌زمینه المان‌ها */
+            --accent-color: #3b82f6; /* آبی روشن برای لینک‌ها و هایلایت */
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+            --active-color: #e3f2fd; /* رنگ پس‌زمینه فعال */
+            --active-text: #1a2a4b; /* رنگ متن فعال */
+            --danger-color: #f87171;
+            --danger-hover: #ef4444;
         }
 
         body {
             font-family: 'Vazirmatn', sans-serif;
-            background: #f0f2f5;
+            background: #f1f5f9; /* پس‌زمینه روشن */
             min-height: 100vh;
-            overflow-x: hidden; /* Prevent horizontal scroll from layout itself */
+            overflow-x: hidden;
+            color: #334155;
+            transition: background-color 0.3s ease;
         }
 
-        /* Wrapper for sidebar and content */
         .wrapper {
             display: flex;
             min-height: 100vh;
-            background: #f8f9fa;
+            background: #f1f5f9;
         }
 
-        /* Sidebar */
+        /*
+        ===================================================
+        سایدبار (منوی کناری)
+        ===================================================
+        */
         .sidebar {
             width: var(--sidebar-width-lg);
-            background: linear-gradient(135deg, #1f2937, #4b5563);
-            color: #e0e7ff;
+            background: var(--primary-color);
+            color: var(--text-light);
             padding-top: 1.5rem;
-            position: fixed; /* Keep sidebar fixed */
+            position: fixed;
             right: 0;
             top: 0;
             bottom: 0;
-            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.25);
-            z-index: 1050; /* Ensure sidebar is above content and overlay */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1050;
             display: flex;
             flex-direction: column;
-            transition: right var(--sidebar-transition-duration) ease;
-            
-            /* Initially hide on small screens */
-            right: calc(-1 * var(--sidebar-width-lg)); /* Start off-screen to the right */
+            transition: right var(--sidebar-transition-duration) ease, box-shadow 0.3s ease;
+            right: calc(-1 * var(--sidebar-width-lg));
         }
 
-        /* Show sidebar on large screens */
         @media (min-width: 992px) {
             .sidebar {
-                right: 0; /* Always visible on large screens */
+                right: 0;
             }
         }
 
-        /* Show sidebar when toggled (mobile) */
         .sidebar.show {
             right: 0;
         }
-        
-        /* New CSS for scrollable content inside sidebar */
+
         .sidebar-scrollable {
-            flex-grow: 1; /* Allow content to grow and fill available space */
-            overflow-y: auto; /* Enable vertical scrolling */
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        /* مخفی کردن اسکرول‌بار در دسکتاپ */
+        @media (min-width: 992px) {
+            .sidebar-scrollable {
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .sidebar-scrollable::-webkit-scrollbar {
+                display: none;
+            }
         }
 
         .sidebar-header {
             padding: 0 1.5rem 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
-            font-weight: 900;
-            font-size: 1.6rem;
-            color: #fbbf24;
-            letter-spacing: 1.5px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             user-select: none;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* Close button for mobile menu */
         .btn-close-menu {
-            display: none; /* Hidden by default */
+            display: none;
             background: transparent;
             border: none;
-            color: #fbbf24;
+            color: var(--accent-color);
             font-size: 1.6rem;
             cursor: pointer;
             transition: color 0.3s ease;
         }
         .btn-close-menu:hover {
-            color: #f59e0b;
+            color: var(--text-light);
         }
-        /* Show close button on small screens */
         @media (max-width: 991.98px) {
             .btn-close-menu {
                 display: inline-block;
@@ -104,79 +128,84 @@
 
         .user-info {
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
             font-size: 1.1rem;
-            color: #d1d5db;
+            color: var(--text-muted);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            background: rgba(255 255 255 / 0.05);
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
             user-select: none;
+            border-radius: 8px;
+            margin: 0.5rem 1rem;
+            transition: background-color 0.3s ease;
         }
         .user-info i {
-            font-size: 1.4rem;
-            color: #fbbf24;
+            font-size: 1.5rem;
+            color: var(--accent-color);
         }
 
-        /* Nav Links */
+        /*
+        ===================================================
+        لینک‌های منو
+        ===================================================
+        */
         .sidebar .nav-link {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            padding: 0.75rem 1.75rem;
-            font-weight: 500;
-            color: #cbd5e1;
+            gap: 1rem;
+            padding: 0.85rem 1.75rem;
+            font-weight: 400;
+            color: var(--text-light);
             border-right: 4px solid transparent;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
         }
 
         .sidebar .nav-link i {
-            font-size: 1.3rem;
-            color: #9ca3af;
+            font-size: 1.4rem;
+            color: var(--text-muted);
             transition: color 0.3s ease;
         }
 
         .sidebar .nav-link:hover {
-            background-color: rgba(251, 191, 36, 0.15);
-            border-right-color: #fbbf24;
-            color: #fbbf24;
+            background-color: var(--secondary-color);
+            border-right-color: var(--accent-color);
+            color: var(--accent-color);
         }
 
         .sidebar .nav-link:hover i {
-            color: #fbbf24;
+            color: var(--accent-color);
         }
 
         .sidebar .nav-link.active {
-            background-color: #fbbf24;
-            color: #1f2937;
-            font-weight: 700;
-            border-right-color: #1f2937;
+            background-color: var(--active-color);
+            color: var(--active-text);
+            font-weight: 600;
+            border-right-color: var(--active-text);
         }
 
         .sidebar .nav-link.active i {
-            color: #1f2937;
+            color: var(--active-text);
         }
 
         .sidebar .nav-link:not(:last-child) {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         .sidebar-menu {
-            /* Remove the border from the last nav item since we're adding it to the ul instead */
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
-        /* Logout Button */
         .sidebar form button.nav-link {
             width: 100%;
             text-align: start;
             padding-left: 1.75rem;
-            color: #ef4444;
-            font-weight: 600;
+            color: var(--danger-color);
+            font-weight: 500;
             border: none;
             background: transparent;
             cursor: pointer;
@@ -184,34 +213,38 @@
         }
 
         .sidebar form button.nav-link:hover {
-            background-color: rgba(239, 68, 68, 0.15);
-            color: #b91c1c;
+            background-color: rgba(248, 113, 113, 0.1);
+            color: var(--danger-hover);
+            border-right-color: var(--danger-hover);
         }
 
-        /* Main content wrapper */
+        /*
+        ===================================================
+        محتوای اصلی و المان‌ها
+        ===================================================
+        */
         .content-wrapper {
             flex-grow: 1;
             padding: 2rem 2.5rem;
             min-height: 100vh;
-            background: #f8fafc;
+            background: #f1f5f9;
             transition: margin-right var(--sidebar-transition-duration) ease;
-            margin-right: 0; /* Default for small screens */
+            margin-right: 0;
+            position: relative;
         }
 
-        /* Adjust content margin on large screens when sidebar is visible */
         @media (min-width: 992px) {
             .content-wrapper {
-                margin-right: var(--sidebar-width-lg); /* Push content to the left of sidebar */
+                margin-right: var(--sidebar-width-lg);
             }
         }
 
-        /* Overlay for small screens when sidebar is open */
         .overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.45);
-            z-index: 1040; /* Below sidebar, above content */
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
             transition: opacity var(--sidebar-transition-duration) ease;
             opacity: 0;
         }
@@ -220,28 +253,38 @@
             opacity: 1;
         }
 
-        /* Menu Toggle Button (for mobile) */
         .btn-toggle {
-            background-color: #374151;
-            color: #fbbf24;
+            background-color: var(--primary-color);
+            color: var(--accent-color);
             border: none;
-            font-size: 1.2rem;
-            padding: 0.5rem 1.2rem;
-            border-radius: 0.375rem;
+            font-size: 1rem;
+            padding: 0.65rem 1.4rem;
+            border-radius: 0.5rem;
             cursor: pointer;
             user-select: none;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
             margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-weight: 500;
         }
         .btn-toggle:hover {
-            background-color: #4b5563;
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .btn-toggle i {
             vertical-align: middle;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            margin-left: 0.5rem;
+        }
+
+        .alert {
+            border-radius: 0.75rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
     </style>
-    @stack('styles') {{-- This line is crucial for page-specific styles --}}
+    @stack('styles')
 </head>
 <body>
 
@@ -352,10 +395,10 @@
         </div>
     </nav>
 
-    <div class="overlay" id="overlay" onclick="closeSidebar()"></div> {{-- Changed onclick to closeSidebar --}}
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
     <main class="content-wrapper">
-        <button class="btn btn-toggle d-lg-none" id="menuToggleBtn" aria-label="بازکردن منو"> {{-- Changed d-md-none to d-lg-none --}}
+        <button class="btn btn-toggle d-lg-none" id="menuToggleBtn" aria-label="بازکردن منو">
             <i class="bi bi-list"></i> منو
         </button>
         
@@ -397,11 +440,9 @@
     overlay.addEventListener('click', closeSidebar);
     closeMenuBtn.addEventListener('click', closeSidebar);
 
-    // Close sidebar if window is resized to large screen
     window.addEventListener('resize', () => {
-        // Use a breakpoint consistent with your CSS (992px for lg)
         if (window.innerWidth >= 992) {
-            closeSidebar(); // Ensure sidebar is hidden if it was open on mobile and user resizes
+            closeSidebar();
         }
     });
 </script>
