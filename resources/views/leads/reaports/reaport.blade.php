@@ -134,6 +134,11 @@
             </table>
         </div>
 
+        <!-- صفحه‌بندی -->
+        <div class="d-flex justify-content-center">
+            {{ $leads->links() }}
+        </div>
+
         <div class="mb-5">
             <h5 class="mb-3">📈 نمودار روند ثبت لیدها</h5>
             <canvas id="leadChart" height="120"></canvas>

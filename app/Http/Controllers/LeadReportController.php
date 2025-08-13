@@ -53,7 +53,7 @@ class LeadReportController extends Controller
             $query->whereBetween('created_at', [$request->from, $request->to]);
         }
 
-        return $query->latest()->get();
+        return $query->latest()->paginate(20);
     }
 
 }
