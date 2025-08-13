@@ -74,43 +74,50 @@
                     </thead>
                     <tbody id="customer-table-desktop">
                         @foreach($customers as $customer)
-                            <tr class="animate-row">
-                                @if(auth()->user()->hasRole('admin'))
-                                    <td><input type="checkbox" name="selected_customers[]" value="{{ $customer->id }}" class="form-check-input"></td>
-                                @endif
-                                <td>{{ $customer->personal_name }}</td>
-                                <td>{{ $customer->company_name }}</td>
-                                <td>{{ $customer->email }}</td>
-                                <td>{{ $customer->mobile_phone }}</td>
-                                <td>{{ $customer->address }}</td>
-                                <td>{{ $customer->company_type }}</td>
-                                <td>{{ $customer->ceo }}</td>
-                                <td>{{ $customer->bank }}</td>
-                                <td>{{ $customer->note }}</td>
-                                <td>{{ $customer->account_number }}</td>
-                                <td>{{ $customer->company_phone }}</td>
-                                <td>{{ $customer->id_meli }}</td>
-                                <td>{{ $customer->postal_code }}</td>
-                                <td>{{ $customer->code_eghtesadi }}</td>
-                                @if(auth()->user()->hasRole('admin'))
-                                    <td>
-                                        <div class="d-flex flex-wrap gap-2 justify-content-center">
-                                            <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-pencil me-1"></i>ویرایش</a>
-                                            <a href="{{ route('customers.message.single', $customer->id) }}" class="btn btn-info btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-envelope me-1"></i>پیام</a>
-                                            <a href="{{ route('cases.create', $customer->id) }}" class="btn btn-secondary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-folder-plus me-1"></i>پرونده جدید</a>
-                                            <a href="{{ route('customers.cases.index', $customer->id) }}" class="btn btn-dark btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-folder2-open me-1"></i>پرونده‌ها</a>
-                                            <a href="{{ route('customer.calls.create', $customer->id) }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-telephone-plus me-1"></i>ثبت تماس</a>
-                                            <a href="{{ route('customer.calls.index', $customer->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-clock-history me-1"></i>سابقه تماس</a>
-
-                                            <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-trash me-1"></i>حذف</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                @endif
-                            </tr>
-                        @endforeach
+                        <tr class="animate-row">
+                            @if(auth()->user()->hasRole('admin'))
+                                <td><input type="checkbox" name="selected_customers[]" value="{{ $customer->id }}" class="form-check-input"></td>
+                            @endif
+                            <td>{{ $customer->personal_name }}</td>
+                            <td>{{ $customer->company_name }}</td>
+                            <td>{{ $customer->email }}</td>
+                            <td>{{ $customer->mobile_phone }}</td>
+                            <td>{{ $customer->address }}</td>
+                            <td>{{ $customer->company_type }}</td>
+                            <td>{{ $customer->ceo }}</td>
+                            <td>{{ $customer->bank }}</td>
+                            <td>{{ $customer->note }}</td>
+                            <td>{{ $customer->account_number }}</td>
+                            <td>{{ $customer->company_phone }}</td>
+                            <td>{{ $customer->id_meli }}</td>
+                            <td>{{ $customer->postal_code }}</td>
+                            <td>{{ $customer->code_eghtesadi }}</td>
+                    
+                            @if(auth()->user()->hasAnyRole(['admin', 'sales_manager', 'management','sales_agent','marketing_manager','marketing_user'])) <!-- نقش‌های مختلف برای دسترسی به دکمه‌ها -->
+                                <td>
+                                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-pencil me-1"></i>ویرایش</a>
+                                        <a href="{{ route('customers.message.single', $customer->id) }}" class="btn btn-info btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-envelope me-1"></i>پیام</a>
+                                        <a href="{{ route('cases.create', $customer->id) }}" class="btn btn-secondary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-folder-plus me-1"></i>پرونده جدید</a>
+                                        <a href="{{ route('customers.cases.index', $customer->id) }}" class="btn btn-dark btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-folder2-open me-1"></i>پرونده‌ها</a>
+                                        <a href="{{ route('customer.calls.create', $customer->id) }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-telephone-plus me-1"></i>ثبت تماس</a>
+                                        <a href="{{ route('customer.calls.index', $customer->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-clock-history me-1"></i>سابقه تماس</a>
+                                    </div>
+                                </td>
+                            @endif
+                    
+                            <!-- دکمه حذف که فقط به admin و manager دسترسی دارد -->
+                            @if(auth()->user()->hasAnyRole(['admin', 'management','marketing_manager','sales_manager']))
+                                <td>
+                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3 shadow-sm"><i class="bi bi-trash me-1"></i>حذف</button>
+                                    </form>
+                                </td>
+                            @endif
+                        </tr>
+                    @endforeach
+                    
                     </tbody>
                 </table>
             </div>
@@ -119,42 +126,69 @@
 
     {{-- کارت مشتریان - موبایل --}}
     <div class="d-md-none">
-        <div class="row row-cols-1 g-3" id="customer-cards-mobile">
+        <div class="row row-cols-1 g-3">
             @foreach($customers as $customer)
                 <div class="col animate-row">
                     <div class="card shadow-sm border-0 rounded-3">
                         <div class="card-body">
-                            <h5 class="card-title text-primary">{{ $customer->personal_name }}</h5>
-                            <p><strong>شرکت:</strong> {{ $customer->company_name }}</p>
-                            <p><strong>ایمیل:</strong> {{ $customer->email }}</p>
-                            <p><strong>موبایل:</strong> {{ $customer->mobile_phone }}</p>
-                            <p><strong>آدرس:</strong> {{ $customer->address }}</p>
-                            <p><strong>نوع شرکت:</strong> {{ $customer->company_type }}</p>
-                            <p><strong>مدیرعامل:</strong> {{ $customer->ceo }}</p>
-                            <p><strong>بانک:</strong> {{ $customer->bank }}</p>
-                            <p><strong>شماره حساب:</strong> {{ $customer->account_number }}</p>
-                            <p><strong>تلفن شرکت:</strong> {{ $customer->company_phone }}</p>
-                            <p><strong>کد ملی:</strong> {{ $customer->id_meli }}</p>
-                            <p><strong>کد پستی:</strong> {{ $customer->postal_code }}</p>
-                            <p><strong>کد اقتصادی:</strong> {{ $customer->code_eghtesadi }}</p>
-                            <p><strong>توضیحات:</strong> {{ $customer->note }}</p>
-
-                            @if(auth()->user()->hasRole('admin'))
-                                <hr class="my-3">
-                                <div class="d-flex flex-column gap-2">
-                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm rounded-pill w-100"><i class="bi bi-pencil me-1"></i>ویرایش</a>
-                                    <a href="{{ route('customers.message.single', $customer->id) }}" class="btn btn-info btn-sm rounded-pill w-100"><i class="bi bi-envelope me-1"></i>پیام</a>
-                                    <a href="{{ route('cases.create', $customer->id) }}" class="btn btn-secondary btn-sm rounded-pill w-100"><i class="bi bi-folder-plus me-1"></i>پرونده جدید</a>
-                                    <a href="{{ route('customers.cases.index', $customer->id) }}" class="btn btn-dark btn-sm rounded-pill w-100"><i class="bi bi-folder2-open me-1"></i>پرونده‌ها</a>
-                                    <a href="{{ route('customer.calls.create', $customer->id) }}" class="btn btn-primary btn-sm rounded-pill w-100"><i class="bi bi-telephone-plus me-1"></i>ثبت تماس</a>
-                                    <a href="{{ route('customer.calls.index', $customer->id) }}" class="btn btn-outline-primary btn-sm rounded-pill w-100"><i class="bi bi-clock-history me-1"></i>سابقه تماس</a>
-
-                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" onsubmit="return confirm('آیا مطمئن هستید؟')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm rounded-pill w-100"><i class="bi bi-trash me-1"></i>حذف</button>
-                                    </form>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h5 class="card-title text-primary mb-0">{{ $customer->personal_name }}</h5>
+                                    <p class="card-text text-muted mb-0">{{ $customer->company_name }}</p>
                                 </div>
-                            @endif
+                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseCard-{{ $customer->id }}" aria-expanded="false"
+                                    aria-controls="collapseCard-{{ $customer->id }}">
+                                    مشاهده جزئیات
+                                </button>
+                            </div>
+                            <div class="collapse" id="collapseCard-{{ $customer->id }}">
+                                <hr class="my-3">
+                                <p class="mb-1"><strong>ایمیل:</strong> {{ $customer->email }}</p>
+                                <p class="mb-1"><strong>موبایل:</strong> {{ $customer->mobile_phone }}</p>
+                                <p class="mb-1"><strong>آدرس:</strong> {{ $customer->address }}</p>
+                                <p class="mb-1"><strong>نوع شرکت:</strong> {{ $customer->company_type }}</p>
+                                <p class="mb-1"><strong>مدیرعامل:</strong> {{ $customer->ceo }}</p>
+                                <p class="mb-1"><strong>بانک:</strong> {{ $customer->bank }}</p>
+                                <p class="mb-1"><strong>شماره حساب:</strong> {{ $customer->account_number }}</p>
+                                <p class="mb-1"><strong>تلفن شرکت:</strong> {{ $customer->company_phone }}</p>
+                                <p class="mb-1"><strong>کد ملی:</strong> {{ $customer->id_meli }}</p>
+                                <p class="mb-1"><strong>کد پستی:</strong> {{ $customer->postal_code }}</p>
+                                <p class="mb-1"><strong>کد اقتصادی:</strong> {{ $customer->code_eghtesadi }}</p>
+                                <p class="mb-0"><strong>توضیحات:</strong> {{ $customer->note }}</p>
+                            </div>
+    
+                            <hr class="my-3">
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                @if(auth()->user()->hasAnyRole(['admin', 'sales_manager', 'management', 'sales_agent', 'marketing_manager', 'marketing_user']))
+                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-pencil me-1"></i>ویرایش
+                                    </a>
+                                    <a href="{{ route('customers.message.single', $customer->id) }}" class="btn btn-info btn-sm rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-envelope me-1"></i>پیام
+                                    </a>
+                                    <a href="{{ route('cases.create', $customer->id) }}" class="btn btn-secondary btn-sm rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-folder-plus me-1"></i>پرونده جدید
+                                    </a>
+                                    <a href="{{ route('customers.cases.index', $customer->id) }}" class="btn btn-dark btn-sm rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-folder2-open me-1"></i>پرونده‌ها
+                                    </a>
+                                    <a href="{{ route('customer.calls.create', $customer->id) }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-telephone-plus me-1"></i>ثبت تماس
+                                    </a>
+                                    <a href="{{ route('customer.calls.index', $customer->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-clock-history me-1"></i>سابقه تماس
+                                    </a>
+                                @endif
+                                @if(auth()->user()->hasAnyRole(['admin', 'management', 'marketing_manager', 'sales_manager']))
+                                    <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3 shadow-sm">
+                                            <i class="bi bi-trash me-1"></i>حذف
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

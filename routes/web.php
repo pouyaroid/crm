@@ -109,8 +109,58 @@ dd($response);
 Route::middleware(['auth', 'role:admin'])->name('shared.')->group(function () {
     Route::get('/saleindex', [SalesController::class, 'index'])->name('index');
 });
+//route role for indexCustomer
+Route::middleware(['auth', 'role:sales_agent|marketing_manager|marketing_user'])->group(function () {
+    Route::get('/customers/create',[CustomerInfoController::class,'create'])->name('customers.create');
+    Route::post('/customers',[CustomerInfoController::class,'store'])->name('customers.store');
+    Route::get('/customers/index', [CustomerInfoController::class, 'index'])->name('customers.index');
+    Route::get('/customers/ajax', [CustomerInfoController::class, 'ajax'])->name('customers.ajax');
 
-Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales'])->group(function () {
+    // Route::get('/customers/index/{id}', [CustomerInfoController::class, 'index'])->name('customers.show');
+    Route::get('/customers/ajax', [CustomerInfoController::class, 'ajax'])->name('customers.ajax');
+    Route::get('/customers/{customer}/edit', [CustomerInfoController::class, 'edit'])->name('customers.edit');
+Route::put('/customers/{customer}', [CustomerInfoController::class, 'update'])->name('customers.update');
+
+Route::get('/customers/import', [CustomerInfoController::class, 'importForm'])->name('customers.import.form');
+Route::post('/customers/import', [CustomerInfoController::class, 'import'])->name('customers.import');
+//for customer calls
+Route::get('/customers/{customer}/calls', [\App\Http\Controllers\CustomerCallController::class, 'index'])->name('customer.calls.index');
+Route::get('/customers/{customer}/calls/create', [\App\Http\Controllers\CustomerCallController::class, 'create'])->name('customer.calls.create');
+Route::post('/customers/{customer}/calls', [\App\Http\Controllers\CustomerCallController::class, 'store'])->name('customer.calls.store');
+//رهگییری محصول
+Route::get('/tracking/create', [ProductTrackingController::class, 'createTracking'])->name('tracking.create.form');
+Route::post('/tracking/store', [ProductTrackingController::class, 'trackingStore'])->name('tracking.store');
+Route::get('/tracking', [ProductTrackingController::class, 'index'])->name('tracking.index');
+Route::get('/tracking/{productTracking}/edit', [ProductTrackingController::class, 'edit'])->name('tracking.edit');
+Route::put('/tracking/{productTracking}', [ProductTrackingController::class, 'update'])->name('tracking.update'); // 
+//for mail
+Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
+Route::post('/customers/message/send', [CustomerInfoController::class, 'sendMessage'])->name('customers.message.send');
+//for CaseCustomer
+Route::get('customers/{customer}/cases/create', [CustomerCaseController::class, 'create'])->name('cases.create');
+Route::post('customers/{customer}/cases', [CustomerCaseController::class, 'store'])->name('cases.store');
+Route::get('customers/{customer}/cases', [CustomerCaseController::class, 'index'])->name('customers.cases.index');
+Route::post('customers/{customer}/cases', [CustomerCaseController::class, 'store'])->name('customers.cases.store');
+
+
+// نمایش فرم ارسال پیام تکی
+Route::get('/customers/message/{id}', [CustomerInfoController::class, 'showMessageForm'])->name('customers.message.single');
+Route::post('/customers/message/single/send', [CustomerInfoController::class, 'sendSingleMessage'])->name('customers.message.single.send');
+
+
+// نمایش لیست کاربران با چک‌باکس
+Route::get('/customers/select', [CustomerInfoController::class, 'showCustomerSelection'])->name('customers.select');
+
+// نمایش فرم نوشتن پیام و ارسال گروهی
+Route::post('/customers/message/form', [CustomerInfoController::class, 'showBulkMessageForm'])->name('customers.message.form');
+
+// ارسال ایمیل گروهی
+Route::post('/customers/message/send', [CustomerInfoController::class, 'sendBulkMessage'])->name('customers.message.send');
+
+
+});
+//route for manager
+Route::middleware(['auth', 'role:sales_agent|sales_manager|admin|sales|management|marketing_manager'])->group(function () {
     Route::get('/customers/create',[CustomerInfoController::class,'create'])->name('customers.create');
     Route::post('/customers',[CustomerInfoController::class,'store'])->name('customers.store');
     Route::get('/customers/index', [CustomerInfoController::class, 'index'])->name('customers.index');
