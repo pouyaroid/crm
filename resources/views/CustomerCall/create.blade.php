@@ -84,15 +84,21 @@
 <script>
 $(document).ready(function () {
     $("#remind_at_jalali").persianDatepicker({
-                calendar: {
-                    persian: {
-                        locale: 'fa',
-                        leapYearMode: 'astronomical'
-                    }
-                },
-            
+        calendar: {
+            persian: {
+                locale: 'fa',
+                leapYearMode: 'astronomical'
+            }
+        },
+        // بعد از انتخاب تاریخ، تاریخ شمسی در input قرار داده می‌شود
+        onSelect: function (date) {
+            // تبدیل تاریخ شمسی به رشته‌ای که با سرور هماهنگ باشد
+            let jalaliDate = date.format('YYYY/MM/DD');
+            $("#remind_at_jalali").val(jalaliDate); // قرار دادن تاریخ شمسی در input
+        }
     });
 });
+
 </script>
 </body>
 </html>
