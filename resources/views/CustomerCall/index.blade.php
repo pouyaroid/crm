@@ -3,35 +3,79 @@
 @section('title', 'سابقه تماس')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-6">
-        <span class="text-indigo-600">{{ $customer->company_name }}</span> - سابقه تماس‌ها
-    </h2>
-
+{{-- اضافه کردن کتابخانه های Bootstrap 5 و RTL --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" xintegrity="sha384-dpuaG1suBy+9ZkM5Wg4iJdCPEzvD5OIlz+rjOStP3h+LPNxsyJmFjSyt4dE+gS6" crossorigin="anonymous">
+<style>
+    /* استایل‌های سفارشی برای زیبایی بیشتر و افکت هاور */
+    body {
+        background-color: #f0f2f5;
+        direction: rtl; /* جهت‌دهی کل صفحه به راست */
+        font-family: 'Vazirmatn', sans-serif;
+    }
+    .card-call {
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border: none;
+        background-color: #ffffff;
+    }
+    .card-call:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+    }
+    .card-title {
+        color: #007bff; /* رنگ آبی برجسته برای عنوان */
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    .card-text {
+        color: #495057;
+        font-size: 0.95rem;
+    }
+    .text-muted {
+        font-size: 0.8rem;
+    }
+    .header-section {
+        border-bottom: 2px solid #e9ecef;
+    }
+</style>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5 header-section">
+        <h2 class="text-primary fw-bold">
+            {{ $customer->company_name }}
+        </h2>
+        <span class="text-secondary h5">سابقه تماس‌ها</span>
+    </div>
+    
+    {{-- نمایش پیغام موفقیت با استایل بوت استرپ --}}
     @if(session('success'))
-        <div class="mb-4 p-4 rounded-lg bg-green-100 text-green-800 border border-green-200 shadow-sm">
-            {{ session('success') }}
+        <div class="alert alert-success alert-dismissible fade show text-center rounded-pill" role="alert">
+            <span class="fw-bold">{{ session('success') }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
         </div>
     @endif
-
+    
+    {{-- نمایش در صورت خالی بودن لیست تماس‌ها --}}
     @if($calls->isEmpty())
-        <div class="p-6 text-center text-gray-600 bg-gray-100 border rounded-lg shadow-sm">
-            هیچ تماسی برای این مشتری ثبت نشده است.
+        <div class="card p-5 text-center text-muted border-dashed">
+            <p class="mb-0 fs-5">هیچ تماسی برای این مشتری ثبت نشده است.</p>
         </div>
     @else
-        <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm p-4 space-y-4">
+        {{-- لیست تماس‌ها در یک گرید دو ستونه --}}
+        <div class="row g-4">
             @foreach($calls as $call)
-                <div class="flex {{ $loop->index % 2 === 0 ? 'justify-start' : 'justify-end' }}">
-                    <div class="max-w-md w-full bg-white rounded-xl shadow-md p-4 border border-gray-200 relative">
-                        <div class="text-sm text-gray-500 mb-1 flex justify-between">
-                            <span class="font-semibold text-indigo-600">{{ $call->user->name ?? '---' }}</span>
-                            <span>{{ \Morilog\Jalali\Jalalian::fromDateTime($call->called_at)->format('Y/m/d H:i') }}</span>
-                        </div>
-                        <div class="text-gray-800 font-bold mb-2">
-                            {{ $call->title ?? '---' }}
-                        </div>
-                        <div class="text-gray-700 whitespace-pre-line text-sm">
-                            {{ $call->description ?? '---' }}
+                <div class="col-12 col-md-6">
+                    <div class="card card-call h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                                {{-- نام کاربر و تاریخ تماس --}}
+                                <h6 class="text-muted fw-bold">{{ $call->user->name ?? '---' }}</h6>
+                                <span class="text-muted">{{ \Morilog\Jalali\Jalalian::fromDateTime($call->called_at)->format('Y/m/d H:i') }}</span>
+                            </div>
+                            {{-- عنوان تماس --}}
+                            <h5 class="card-title mb-2">{{ $call->title ?? '---' }}</h5>
+                            {{-- توضیحات تماس --}}
+                            <p class="card-text text-dark flex-grow-1">{{ $call->description ?? '---' }}</p>
                         </div>
                     </div>
                 </div>
@@ -39,4 +83,6 @@
         </div>
     @endif
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 @endsection
